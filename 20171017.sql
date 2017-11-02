@@ -1,4 +1,8 @@
- /* BENITO SANCHEZ BUSTOS */
+ /* 
+ 	BENITO
+ 	SANCHEZ 
+ 	BUSTOS 
+ */
  /*
  BUSQUEDA DE ORDENANTE
  */
@@ -14,11 +18,11 @@ from (
 left  join [sethdzqa]..[cat_cta_banco] b on cast(cast(a.asuntoOrdenante as bigint) as varchar(25))=b.id_chequera collate Modern_Spanish_CI_AS
 order by 3 asc
 -- total de cuentas Ordenante 47
--- 46 cuentas hacen match aplicanndo conversion a bigint y despuÈs a varchar 25
--- solo una cuenta no se encuentra en el cat·logo
+-- 46 cuentas hacen match aplicanndo conversion a bigint y despu√©s a varchar 25
+-- solo una cuenta no se encuentra en el cat√°logo
 select * from LRS..BNCMR_Trans_TNN  where AsuntoOrdenante='000000000443409767'
 --BC124359
---el dato viene del txt y en el cat·logo esta asi '9100443409767'
+--el dato viene del txt y en el cat√°logo esta asi '9100443409767'
 -- LA CUENTA SI SE ENCUENTRA EN EL CATALOGO  PERO ESTA CON UN PRFIJO 9100
 SELECT id_banco,id_chequera,desc_chequera FROM [sethdzqa]..[cat_cta_banco] WHERE id_chequera LIKE '%443409767%'
 
@@ -42,11 +46,11 @@ left  join [sethdzqa]..[cat_cta_banco] b on cast(cast(a.AsuntoBeneficiario as bi
 WHERE b.id_chequera IS  NULL
 order by 3 asc
 -- total de cuentas bENEFICIARIO 4435
--- 36 cuentas hacen match aplicanndo conversion a bigint y despuÈs a varchar 25
--- 4399 CUENTAS no se encuentra en el cat·logo
+-- 36 cuentas hacen match aplicanndo conversion a bigint y despu√©s a varchar 25
+-- 4399 CUENTAS no se encuentra en el cat√°logo
 select * from LRS..BNCMR_Trans_TNN  where AsuntoBeneficiario='000000000144619757'
 --BC124359
---el dato viene del txt y en el cat·logo esta asi '9100443409767'
+--el dato viene del txt y en el cat√°logo esta asi '9100443409767'
 -- LA CUENTA SI SE ENCUENTRA EN EL CATALOGO  PERO ESTA CON UN PRFIJO 9100
 SELECT * FROM [sethdzqa]..[cat_cta_banco] WHERE id_chequera LIKE '%144619757%'
 
