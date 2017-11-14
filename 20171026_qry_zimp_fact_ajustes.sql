@@ -1,4 +1,6 @@
 select 
+zf.no_empresa,
+hm.no_empresa,
 upper(dt.nom_arch ) nom_arch
 , dt.id_chequera as cta_otorgante_txt
 , dt.id_banco_benef as id_banco_benef_txt
@@ -76,7 +78,7 @@ AND dt.id_estatus_arch IN ('T','R')  /* T=Transaccion ,R=Regenerado, X=Cancelado
 and year(dt.fec_valor)=2017
 and month(dt.fec_valor)=9
 AND DAY(dt.fec_valor) IN (5)
-AND cb.id_clabe is null
+--AND cb.id_clabe is null
 GROUP BY 
   dt.nom_arch 
 , dt.id_chequera 
@@ -114,5 +116,7 @@ GROUP BY
 ,u2.nombre +' ' +u2.paterno + ' '+u2.materno
 ,zf.fec_propuesta
 ,hm.fec_propuesta
+,zf.no_empresa,
+hm.no_empresa
 ORDER BY cb.id_clabe
 

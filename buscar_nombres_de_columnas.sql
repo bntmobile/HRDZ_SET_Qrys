@@ -4,6 +4,6 @@ FROM       sysobjects INNER JOIN
                syscolumns ON sysobjects.id = syscolumns.id INNER JOIN
                systypes ON syscolumns.xtype = systypes.xtype
 WHERE     (sysobjects.xtype = 'U') 
-                and (UPPER(syscolumns.name) like upper('%no_prov_as400%'))
+                and (UPPER(syscolumns.name) like upper('%cve_control%'))
 ORDER BY sysobjects.name, syscolumns.colid
   
