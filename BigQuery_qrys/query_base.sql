@@ -113,6 +113,8 @@ SELECT
   SUM(COALESCE (pad.importe,0)) AS importe_PagadoDet,
   SUM(COALESCE (pa.importe,0)) AS  importe_Pagado,
   
+  SUM(COALESCE (pp.importe,0)) -  SUM(COALESCE (pad.importe,0)) Importe_Diferencia_entre_propuesta_pagado,
+  
   pg.nom_arch,
   pg.id_estatus_arch,
   pg.id_banco_benef,
@@ -128,9 +130,15 @@ SELECT
 , case when e_prop.empleado_de_la_empresa is not null  then  e_prop.empleado_de_la_empresa else 'PROVEEDOR' end AS Empledao_o_Proveedor_prop
 , case when e_pad.empleado_de_la_empresa is not null  then  e_pad.empleado_de_la_empresa else 'PROVEEDOR' end AS Empledao_o_Proveedor_PagoDetalle
 , case when e_pa.empleado_de_la_empresa is not null  then  e_pa.empleado_de_la_empresa else 'PROVEEDOR' end AS Empledao_o_Proveedor_Pago
- ,pp.no_cliente as no_cliente_prop
+, pp.no_cliente as no_cliente_prop
 , pad.no_cliente as no_cliente_PagoDet
 , pa.no_cliente as no_cliente_Pago
+, case 
+      when      pp.no_cliente is not null and pad.no_cliente is not null and pa.no_cliente is not null then
+           case when pp.no_cliente = pad.no_cliente and pad.no_cliente  = pa.no_cliente  then 'No cambio la persona'  else 'Cambio la persona a traves del proceso' end 
+      else '' end
+           as estatus_cambio_persona_proceso 
+
 
 FROM   `mx-herdez-analytics.sethdzqa.TransfPropuestasR3000` pp
 LEFT JOIN   (select * from `mx-herdez-analytics.sethdzqa.TransfPagoDetalleR3201` union all select * from `sethdzqa.TransfPagoDetalleR3201_complemento_viene_3200` )   pad ON  pp.no_docto= pad.no_docto
@@ -257,6 +265,7 @@ GROUP BY
 ,  pp.fec_valor_original
 ,  pad.fec_valor_original
 ,  pa.fec_valor_original
+
  
 
 
