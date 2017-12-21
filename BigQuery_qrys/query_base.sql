@@ -27,6 +27,7 @@ SELECT
   FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pp.fec_valor)) AS FechaPropuestaPago,
   FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pad.fec_valor)) AS fecha_pagoDet,
   FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pa.fec_valor)) AS FechaPago,
+  sag.fecha_pago as FechaPagoSag,
   pp.no_docto,
   sag.cve_control,
   sag.fecha_propuesta,
@@ -161,6 +162,7 @@ GROUP BY
       ,pp.no_cliente
 ,pad.no_cliente
 ,pa.no_cliente
+ ,sag.fecha_pago
 
 
 
