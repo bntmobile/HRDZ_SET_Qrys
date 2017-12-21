@@ -35,26 +35,39 @@ SELECT
   sag.usuario_uno as Firma1,
   sag.usuario_dos as Firma2,
   sag.usuario_tres as Firma3,
-   concat( u1.nombre ,' ',u1.paterno ,' ',u1.materno )as PersonaFirma1,
-   concat( u2.nombre ,' ',u2.paterno ,' ',u2.materno )as PersonaFirma2,
+  concat( u1.nombre ,' ',u1.paterno ,' ',u1.materno )as PersonaFirma1,
+  concat( u2.nombre ,' ',u2.paterno ,' ',u2.materno )as PersonaFirma2,
   concat( u3.nombre ,' ',u3.paterno ,' ',u3.materno ) as PersonaFirma3,
+  
   pp.id_banco AS id_banco_prop_otorgante,
+  ban_o_pp.desc_banco AS desc_banco_prop_otorgante,
   pp.id_chequera AS id_chequera_prop_otorgante,
   pp.id_banco_benef AS id_banco_prop_benef,
-  ban_o.desc_banco AS desc_banco_prop_otorgante,
-  ban_b.desc_banco AS desc_banco_prop_benef,
+  ban_b_pp.desc_banco AS desc_banco_prop_benef,
   pp.id_chequera_benef AS id_chequera_pop_benef,
-
-  pa.id_banco_benef AS id_banco_benef_pago,
-  pa.id_chequera_benef AS id_chequera_benef_pago,
-  ban_o_pad.desc_banco AS desc_banco_otorgante_pago,
-  ban_b_pad.desc_banco AS desc_banco_beneficiario_pago,
-  pad.id_estatus_mov estatus_pago_detalle,
-  CASE     WHEN pg.no_folio_det= pad.folio_ref AND pg.no_docto=pad.no_docto THEN pg.id_estatus_mov     ELSE pa.id_estatus_mov   END estatus_p,
+    
+  pad.id_banco AS id_banco_pagoDet_otorgante,
+  ban_o_pad.desc_banco AS desc_banco_pagoDet_otorgante,
+  pad.id_chequera AS id_chequera_pagoDet_otorgante,
+  pad.id_banco_benef AS id_banco_pagoDet_benef,
+  ban_b_pad.desc_banco AS desc_banco_pagoDet_beneficiario,
+  pad.id_chequera_benef AS id_chequera_pagoDet_benef,
   
-  ce_prop.desc_estatus as estatus_prop,
-  ce_pad.desc_estatus as estatus_PagoDet,
-  ce_pa.desc_estatus as estatus_Pago,
+  
+  
+  pa.id_banco AS id_banco_pago_otorgante,
+  ban_o_pa.desc_banco AS desc_banco_pago_otorgante,
+  pa.id_chequera AS id_chequera_pago_otorgante,
+  pa.id_banco_benef AS id_banco_pago_benef,
+  ban_b_pa.desc_banco AS desc_banco_pago_beneficiario,
+  pa.id_chequera_benef AS id_chequera_pago_benef,
+    
+  pp.id_estatus_mov id_estatus_prop,
+  ce_prop.desc_estatus as desc_estatus_prop,
+  pad.id_estatus_mov id_estatus_pagoDet,
+  ce_pad.desc_estatus as desc_estatus_PagoDet,
+  pa.id_estatus_mov id_estatus_pago,  
+  ce_pa.desc_estatus as desc_estatus_Pago,
 
   
   fp_pp.desc_forma_pago as FormaPagoProp,
@@ -62,8 +75,11 @@ SELECT
   fp_pa.desc_forma_pago as FormaPago,
   
   pp.id_divisa as divisa_prop,
+  pp.id_divisa_original as divisa_original_prop,
   pad.id_divisa as divisa_PagoDet,
-  pa.id_divisa as divisa_Pago,
+   pad.id_divisa_original as divisa_original_PagoDet,
+    pa.id_divisa as divisa_Pago,
+  pa.id_divisa_original as divisa_original_Pago,
   
   SUM(pp.importe) AS  importe_propuesta,
   SUM(pad.importe) AS importe_PagadoDet,
@@ -89,10 +105,18 @@ FROM   `mx-herdez-analytics.sethdzqa.TransfPropuestasR3000` pp
 LEFT JOIN   (select * from `mx-herdez-analytics.sethdzqa.TransfPagoDetalleR3201` union all select * from `sethdzqa.TransfPagoDetalleR3201_complemento_viene_3200` )   pad ON  pp.no_docto= pad.no_docto
 LEFT JOIN   `mx-herdez-analytics.sethdzqa.TransfPagosR3200` pa ON   pa.no_docto= pad.no_docto
 LEFT JOIN                                                   pg  ON   pg.no_folio_det= pad.folio_ref 
-LEFT JOIN   `mx-herdez-analytics.sethdzqa.cat_banco`        ban_o ON   ban_o.id_banco= pp.id_banco
-LEFT JOIN   `mx-herdez-analytics.sethdzqa.cat_banco`        ban_b ON   ban_b.id_banco= pp.id_banco_benef
-LEFT JOIN   `mx-herdez-analytics.sethdzqa.cat_banco`        ban_o_pad ON   ban_o_pad.id_banco= pad.id_banco 
-LEFT JOIN   `mx-herdez-analytics.sethdzqa.cat_banco`        ban_b_pad ON   ban_b_pad.id_banco= pad.id_banco_benef
+
+LEFT JOIN   `mx-herdez-analytics.sethdzqa.cat_banco`        ban_o_pp ON   ban_o_pp.id_banco= pp.id_banco
+LEFT JOIN   `mx-herdez-analytics.sethdzqa.cat_banco`        ban_b_pp ON   ban_b_pp.id_banco= pp.id_banco_benef 
+
+LEFT JOIN   `mx-herdez-analytics.sethdzqa.cat_banco`        ban_o_pad ON   ban_o_pad.id_banco= pad.id_banco     
+LEFT JOIN   `mx-herdez-analytics.sethdzqa.cat_banco`        ban_b_pad ON   ban_b_pad.id_banco= pad.id_banco_benef 
+
+LEFT JOIN   `mx-herdez-analytics.sethdzqa.cat_banco`        ban_o_pa ON   ban_o_pa.id_banco= pa.id_banco      
+LEFT JOIN   `mx-herdez-analytics.sethdzqa.cat_banco`        ban_b_pa ON   ban_b_pa.id_banco= pa.id_banco_benef
+
+
+
 left join `mx-herdez-analytics.sethdzqa.cat_forma_pago`     fp_pp  on   pp.id_forma_pago  = fp_pp.id_forma_pago
 left join `mx-herdez-analytics.sethdzqa.cat_forma_pago`     fp_pad on  pad.id_forma_pago = fp_pad.id_forma_pago
 left join `mx-herdez-analytics.sethdzqa.cat_forma_pago`     fp_pa  on   pa.id_forma_pago  = fp_pa.id_forma_pago
@@ -114,6 +138,7 @@ GROUP BY
   pa.id_banco_benef,
   pa.id_chequera_benef,
   pp.id_banco,
+  pad.id_banco,
   pp.id_chequera,
   pg.nom_arch,
   CASE     WHEN pa.no_folio_det=pad.folio_ref THEN 'PAGADO' END,
@@ -132,8 +157,10 @@ GROUP BY
   FORMAT_DATE( "%d/%m/%Y",     extract(date    FROM      pp.fec_valor)),
   FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pad.fec_valor)),
   FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pa.fec_valor)),   
-  ban_o.desc_banco,
-  ban_b.desc_banco,
+  ban_o_pp.desc_banco,
+  ban_b_pp.desc_banco,
+   ban_o_pa.desc_banco,
+  ban_b_pa.desc_banco,
   ban_o_pad.desc_banco,
   ban_b_pad.desc_banco,
   fp_pp.desc_forma_pago,
@@ -142,6 +169,7 @@ GROUP BY
   ce_prop.desc_estatus  ,
   ce_pad.desc_estatus  ,
   ce_pa.desc_estatus,
+  pp.id_estatus_mov,
   pad.id_estatus_mov,
   pa.id_estatus_mov,
   sag.cve_control,
@@ -156,6 +184,9 @@ GROUP BY
      pp.id_divisa  ,
   pad.id_divisa  ,
   pa.id_divisa , 
+       pp.id_divisa_original  ,
+  pad.id_divisa_original  ,
+  pa.id_divisa_original ,
   e_prop.empleado_de_la_empresa ,
     e_pad.empleado_de_la_empresa ,
       e_pa.empleado_de_la_empresa 
@@ -163,6 +194,15 @@ GROUP BY
 ,pad.no_cliente
 ,pa.no_cliente
  ,sag.fecha_pago
+ ,pa.id_banco
+ ,pa.id_chequera
+  ,pa.id_banco_benef 
+  ,pa.id_chequera_benef 
+  
+ ,pad.id_chequera
+ ,pad.id_banco
+ ,pad.id_banco_benef 
+ ,pad.id_chequera_benef 
 
 
 
