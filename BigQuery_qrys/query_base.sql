@@ -32,8 +32,11 @@ SELECT
   sag.cve_control,
   sag.fecha_propuesta,
   sag.concepto,
+   cr_pp.id_rubro as id_rubro_prop,
    cr_pp.desc_rubro as desc_rubro_prop,
+   cr_pad.id_rubro as id_rubro_pagoDet,
    cr_pad.desc_rubro as desc_rubro_pagoDet,
+    cr_pa.id_rubro as id_rubro_pago,
   cr_pa.desc_rubro as desc_rubro_pago,
   
  sag.usuario_uno as Firma1,
@@ -145,77 +148,80 @@ WHERE
   1=1
  
 GROUP BY
-  pp.no_docto,
-  pa.id_banco_benef,
-  pa.id_chequera_benef,
-  pp.id_banco,
-  pad.id_banco,
-  pp.id_chequera,
-  pg.nom_arch,
-  CASE     WHEN pa.no_folio_det=pad.folio_ref THEN 'PAGADO' END,
-  pa.no_folio_det,
-  pad.folio_ref,
-  pg.no_folio_det,
-  pad.no_folio_det,
-  pg.id_estatus_mov,
-  pg.id_estatus_arch,
-  pg.id_banco_benef,
-  pg.id_chequera_benef,
-  pp.id_banco_benef,
-  pp.id_chequera_benef,
-  pg.no_docto,
-  pad.no_docto,
-  FORMAT_DATE( "%d/%m/%Y",     extract(date    FROM      pp.fec_valor)),
-  FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pad.fec_valor)),
-  FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pa.fec_valor)),   
-  ban_o_pp.desc_banco,
-  ban_b_pp.desc_banco,
-   ban_o_pa.desc_banco,
-  ban_b_pa.desc_banco,
-  ban_o_pad.desc_banco,
-  ban_b_pad.desc_banco,
-  fp_pp.desc_forma_pago,
-  fp_pad.desc_forma_pago ,
-  fp_pa.desc_forma_pago ,
-  ce_prop.desc_estatus  ,
-  ce_pad.desc_estatus  ,
-  ce_pa.desc_estatus,
-  pp.id_estatus_mov,
-  pad.id_estatus_mov,
-  pa.id_estatus_mov,
-  sag.cve_control,
-  sag.fecha_propuesta,
-  sag.concepto,
-  sag.usuario_uno  ,
-  sag.usuario_dos  ,
-  sag.usuario_tres  ,
-   concat( u1.nombre ,' ',u1.paterno ,' ',u1.materno ),
-   concat( u2.nombre ,' ',u2.paterno ,' ',u2.materno ) ,
-  concat( u3.nombre ,' ',u3.paterno ,' ',u3.materno ) 
-, pp.id_divisa  
-, pad.id_divisa  
-, pa.id_divisa
-, pp.id_divisa_original  
-, pad.id_divisa_original  
-, pa.id_divisa_original 
-, e_prop.empleado_de_la_empresa 
-, e_pad.empleado_de_la_empresa 
-, e_pa.empleado_de_la_empresa 
-, pp.no_cliente
-, pad.no_cliente
-, pa.no_cliente
-, sag.fecha_pago
-, pa.id_banco
-, pa.id_chequera
-, pa.id_banco_benef 
-, pa.id_chequera_benef  
-, pad.id_chequera
-, pad.id_banco
-, pad.id_banco_benef 
-, pad.id_chequera_benef 
-, cr_pp.desc_rubro 
-, cr_pad.desc_rubro 
-, cr_pa.desc_rubro 
-
+   pp.no_docto
+,  pa.id_banco_benef
+,  pa.id_chequera_benef
+,  pp.id_banco
+,  pad.id_banco
+,  pp.id_chequera
+,  pg.nom_arch
+,  CASE     WHEN pa.no_folio_det=pad.folio_ref THEN 'PAGADO' END
+,  pa.no_folio_det
+,  pad.folio_ref
+,  pg.no_folio_det
+,  pad.no_folio_det
+,  pg.id_estatus_mov
+,  pg.id_estatus_arch
+,  pg.id_banco_benef
+,  pg.id_chequera_benef
+,  pp.id_banco_benef
+,  pp.id_chequera_benef
+,  pg.no_docto
+,  pad.no_docto
+,  FORMAT_DATE( "%d/%m/%Y",     extract(date    FROM      pp.fec_valor))
+,  FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pad.fec_valor))
+,  FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pa.fec_valor)) 
+,  ban_o_pp.desc_banco
+,  ban_b_pp.desc_banco
+,   ban_o_pa.desc_banco
+,  ban_b_pa.desc_banco
+,  ban_o_pad.desc_banco
+,  ban_b_pad.desc_banco
+,  fp_pp.desc_forma_pago
+,  fp_pad.desc_forma_pago 
+,  fp_pa.desc_forma_pago 
+,  ce_prop.desc_estatus  
+,  ce_pad.desc_estatus  
+,  ce_pa.desc_estatus
+,  pp.id_estatus_mov
+,  pad.id_estatus_mov
+,  pa.id_estatus_mov
+,  sag.cve_control
+,  sag.fecha_propuesta
+,  sag.concepto
+,  sag.usuario_uno  
+,  sag.usuario_dos  
+,  sag.usuario_tres  
+,  concat( u1.nombre ,' ',u1.paterno ,' ',u1.materno )
+,  concat( u2.nombre ,' ',u2.paterno ,' ',u2.materno ) 
+,  concat( u3.nombre ,' ',u3.paterno ,' ',u3.materno ) 
+,  pp.id_divisa  
+,  pad.id_divisa  
+,  pa.id_divisa
+,  pp.id_divisa_original  
+,  pad.id_divisa_original  
+,  pa.id_divisa_original 
+,  e_prop.empleado_de_la_empresa 
+,  e_pad.empleado_de_la_empresa 
+,  e_pa.empleado_de_la_empresa 
+,  pp.no_cliente
+,  pad.no_cliente
+,  pa.no_cliente
+,  sag.fecha_pago
+,  pa.id_banco
+,  pa.id_chequera
+,  pa.id_banco_benef 
+,  pa.id_chequera_benef  
+,  pad.id_chequera
+,  pad.id_banco
+,  pad.id_banco_benef 
+,  pad.id_chequera_benef 
+,  cr_pp.desc_rubro 
+,  cr_pp.id_rubro
+,  cr_pad.desc_rubro 
+,  cr_pad.id_rubro
+,  cr_pa.desc_rubro 
+,  cr_pa.id_rubro
+ 
 
 
