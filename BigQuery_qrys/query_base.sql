@@ -32,7 +32,10 @@ SELECT
   sag.cve_control,
   sag.fecha_propuesta,
   sag.concepto,
- 
+   cr_pp.desc_rubro as desc_rubro_prop,
+   cr_pad.desc_rubro as desc_rubro_pagoDet,
+  cr_pa.desc_rubro as desc_rubro_pago,
+  
  sag.usuario_uno as Firma1,
  concat( u1.nombre ,' ',u1.paterno ,' ',u1.materno )as PersonaFirma1,
  sag.usuario_dos as Firma2,
@@ -135,6 +138,9 @@ left join  `mx-herdez-analytics.sethdzqa.cat_usuario` u3 on sag.usuario_tres = u
 left join  `mx-herdez-analytics.sethdzqa.v_cat_empleados`  e_prop ON   CAST(pp.no_cliente AS STRING) = CAST(e_prop.no_persona AS STRING)
 left join  `mx-herdez-analytics.sethdzqa.v_cat_empleados`  e_pad ON   CAST(pad.no_cliente AS STRING) = CAST(e_pad.no_persona AS STRING)
 left join  `mx-herdez-analytics.sethdzqa.v_cat_empleados`  e_pa ON   CAST(pa.no_cliente AS STRING) = CAST(e_pa.no_persona AS STRING)
+left join `mx-herdez-analytics.sethdzqa.cat_rubro` cr_pp   on cr_pp.id_rubro  =  pp.id_rubro
+left join `mx-herdez-analytics.sethdzqa.cat_rubro` cr_pad  on cr_pad.id_rubro =  pad.id_rubro
+left join `mx-herdez-analytics.sethdzqa.cat_rubro` cr_pa   on cr_pa.id_rubro  =  pa.id_rubro
 WHERE
   1=1
  
@@ -185,29 +191,31 @@ GROUP BY
   sag.usuario_tres  ,
    concat( u1.nombre ,' ',u1.paterno ,' ',u1.materno ),
    concat( u2.nombre ,' ',u2.paterno ,' ',u2.materno ) ,
-  concat( u3.nombre ,' ',u3.paterno ,' ',u3.materno ) ,
-     pp.id_divisa  ,
-  pad.id_divisa  ,
-  pa.id_divisa , 
-       pp.id_divisa_original  ,
-  pad.id_divisa_original  ,
-  pa.id_divisa_original ,
-  e_prop.empleado_de_la_empresa ,
-    e_pad.empleado_de_la_empresa ,
-      e_pa.empleado_de_la_empresa 
-      ,pp.no_cliente
-,pad.no_cliente
-,pa.no_cliente
- ,sag.fecha_pago
- ,pa.id_banco
- ,pa.id_chequera
-  ,pa.id_banco_benef 
-  ,pa.id_chequera_benef 
-  
- ,pad.id_chequera
- ,pad.id_banco
- ,pad.id_banco_benef 
- ,pad.id_chequera_benef 
+  concat( u3.nombre ,' ',u3.paterno ,' ',u3.materno ) 
+, pp.id_divisa  
+, pad.id_divisa  
+, pa.id_divisa
+, pp.id_divisa_original  
+, pad.id_divisa_original  
+, pa.id_divisa_original 
+, e_prop.empleado_de_la_empresa 
+, e_pad.empleado_de_la_empresa 
+, e_pa.empleado_de_la_empresa 
+, pp.no_cliente
+, pad.no_cliente
+, pa.no_cliente
+, sag.fecha_pago
+, pa.id_banco
+, pa.id_chequera
+, pa.id_banco_benef 
+, pa.id_chequera_benef  
+, pad.id_chequera
+, pad.id_banco
+, pad.id_banco_benef 
+, pad.id_chequera_benef 
+, cr_pp.desc_rubro 
+, cr_pad.desc_rubro 
+, cr_pa.desc_rubro 
 
 
 
