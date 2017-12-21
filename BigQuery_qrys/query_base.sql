@@ -27,6 +27,9 @@ SELECT
   FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pp.fec_valor)) AS FechaPropuestaPago,
   FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pad.fec_valor)) AS fecha_pagoDet,
   FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pa.fec_valor)) AS FechaPago,
+  FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pp.fec_valor_original)) AS FechaPropuestaPago_Original,
+  FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pad.fec_valor_original)) AS FechaPagoDet_Original,
+  FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pa.fec_valor_original)) AS FechaPago_Original,
   sag.fecha_pago as FechaPagoSag,
   pp.no_docto,
   sag.cve_control,
@@ -69,6 +72,23 @@ SELECT
   pa.id_banco_benef AS id_banco_pago_benef,
   ban_b_pa.desc_banco AS desc_banco_pago_beneficiario,
   pa.id_chequera_benef AS id_chequera_pago_benef,
+
+   pp.id_banco_ant  id_banco_ant_prop,
+   pp.id_chequera_ant id_chequera_ant_prop,
+   pp.no_cliente_ant  no_cliente_ant_prop,
+   pp.origen_mov_ant origen_mov_ant_prop,
+   pad.id_banco_ant id_banco_ant_pagoDet,
+   pad.id_chequera_ant id_chequera_ant_pagoDet,
+   pad.no_cliente_ant no_cliente_ant_pagoDet,
+   pad.origen_mov_ant origen_mov_ant_pagoDet,
+   pa.id_banco_ant id_banco_ant_pago,
+   pa.id_chequera_ant id_chequera_ant_pago,
+   pa.no_cliente_ant no_cliente_ant_pago,
+   pa.origen_mov_ant origen_mov_ant_pago,
+  
+  
+  
+  
     
   pp.id_estatus_mov id_estatus_prop,
   ce_prop.desc_estatus as desc_estatus_prop,
@@ -222,6 +242,21 @@ GROUP BY
 ,  cr_pad.id_rubro
 ,  cr_pa.desc_rubro 
 ,  cr_pa.id_rubro
+,  pp.id_banco_ant
+,  pp.id_chequera_ant
+,  pp.no_cliente_ant
+,  pp.origen_mov_ant
+,  pad.id_banco_ant
+,  pad.id_chequera_ant
+,  pad.no_cliente_ant
+,  pad.origen_mov_ant   
+,  pa.id_banco_ant
+,  pa.id_chequera_ant
+,  pa.no_cliente_ant
+,  pa.origen_mov_ant
+,  pp.fec_valor_original
+,  pad.fec_valor_original
+,  pa.fec_valor_original
  
 
 
