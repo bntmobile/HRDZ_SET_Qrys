@@ -1,4 +1,7 @@
+SELECT no_empresa,	no_folio_det,	no_folio_mov,	id_tipo_operacion,	id_cve_operacion,	id_tipo_saldo,	no_linea,	id_inv_cbolsa,	no_cuenta,	id_estatus_mov,	no_cheque,	id_chequera,	id_banco,	id_forma_pago,	importe,	importe_original,	b_salvo_buen_cobro,	id_tipo_docto,	no_docto,	valor_tasa,	fec_operacion,	fec_valor,	fec_valor_original,	fec_recalculo,	folio_ref,	dias_inv,	id_tipo_movto,	id_caja,	id_divisa,	id_divisa_original,	fec_exportacion,	fec_reimprime,	fec_imprime,	fec_cheque,	lote_entrada,	lote_salida,	referencia,	folio_banco,	beneficiario,	id_leyenda,	id_banco_benef,	id_chequera_benef,	concepto,	id_contable,	folio_seg,	arch_protegido,	usuario_imprime,	fec_alta,	usuario_alta,	fec_modif,	usuario_modif,	no_cuenta_ref,	id_estatus_cb,	id_estatus_cc,	no_cliente,	no_cobrador,	sucursal,	plaza,	observacion,	no_recibo,	origen_mov,	no_docto_cus,	solicita,	autoriza,	b_entregado,	importe_desglosado,	fec_entregado,	fec_conf_trans,	fec_rech_trans,	tipo_cambio,	tipo_cancelacion,	fec_exporta_flujo,	fec_trans,	b_gen_contable,	id_codigo,	id_subcodigo,	fisica_moral,	nac_ext,	id_estatus_cheq,	invoice_id,	vendor_id,	vendor_site_id,	invoice_type,	no_factura,	grupo_pago,	id_rubro,	agrupa1,	agrupa2,	agrupa3,	po_headers,	alternate_vendor_id_eft,	alternate_vendor_site_id_eft,	invoice_type_lookup_code,	b_autoriza_impre,	firmante1,	firmante2,	oper_may_esp,	cod_bloqueo,	rfc,	b_gen_conta,	no_poliza,	c_poliza,	c_lote,	c_periodo,	c_mes,	division,	ind_iva,	contrarecibo,	deudor,	descripcion,	rango,	no_pedido,	referencia_ban,	hora_recibo,	fec_concilia_caja,	fec_propuesta,	importe_parcial,	b_arch_seg,	cve_control,	id_banco_ant,	id_chequera_ant,	origen_mov_ant,	no_cliente_ant,	id_servicio_be,	e_mail,	clabe,	id_area,	monto_sobregiro,	fec_propone_mov,	usu_propone_mov,	id_grupo,	tabla_origen,	fecha_contabilizacion,	b_certificado,	fec_certificacion,	abba,	swift,	nombre_prov_divisas,	banco_divisas,	direccion_divisas,	cuenta_divisas,	sort_code,	abi,	cab,	comentario1,	comentario2
+FROM (
 SELECT 
+        ROW_NUMBER() OVER (ORDER BY no_folio_det) AS rowid ,
         COALESCE(no_empresa,0) as no_empresa ,
         COALESCE(no_folio_det,0) as no_folio_det,
         COALESCE(no_folio_mov,0) as no_folio_mov,
@@ -36,7 +39,7 @@ SELECT
         COALESCE(lote_entrada,0) as lote_entrada,
 	    COALESCE(lote_salida,0) as lote_salida,
 	    replace(replace(replace(replace(referencia,'"',''),char(13),' '),char(10),' '),'|','')as referencia,
-        folio_banco,
+	     replace(replace(replace(replace(folio_banco,'"',''),char(13),' '),char(10),' '),'|','')as folio_banco,
         replace(replace(replace(replace(beneficiario,'"',''),char(13),' '),char(10),' '),'|','') as beneficiario,
         id_leyenda,
         COALESCE(id_banco_benef,0) as id_banco_benef,
@@ -146,5 +149,11 @@ SELECT
         comentario1,
         comentario2
 FROM  hist_movimiento
---where no_folio_det in ('13687')
+--where no_folio_det in ('4969110')
+
+)X
+--WHERE rowid>1000000
+--and no_folio_det=1801023
+
+--(1420743 row(s) affected)
 
