@@ -89,9 +89,9 @@ SELECT
     pa.id_divisa as divisa_Pago,
   pa.id_divisa_original as divisa_original_Pago,
   
-  SUM(pp.importe) AS  importe_propuesta,
-  SUM(pad.importe) AS importe_PagadoDet,
-  SUM(pa.importe) AS  importe_Pagado,
+  SUM(COALESCE (pp.importe,0)) AS  importe_propuesta,
+  SUM(COALESCE (pad.importe,0)) AS importe_PagadoDet,
+  SUM(COALESCE (pa.importe,0)) AS  importe_Pagado,
   
   pg.nom_arch,
   pg.id_estatus_arch,
