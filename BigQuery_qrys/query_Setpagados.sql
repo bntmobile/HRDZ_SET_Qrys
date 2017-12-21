@@ -61,8 +61,8 @@ and m.id_estatus_mov in ('K','T')
 order by sa.cve_control,desc_grupo_flujo,cupo_total asc
  
  
- select * from (select * from movimiento union all select * from hist_movimiento) m
- where  cve_control ='MA100011120161001'
+ --select * from (select * from movimiento union all select * from hist_movimiento) m
+ --where  cve_control ='MA100011120161001'
 
 
  
