@@ -122,6 +122,8 @@ SELECT
   CASE    
           WHEN pg.no_folio_det= pad.folio_ref and  pg.id_estatus_mov in ('K','T') THEN 'PAGADO' 
           WHEN pg.no_folio_det= pad.no_folio_det and  pg.id_estatus_mov in ('K','T') THEN 'PAGADO'
+		  WHEN pg.no_folio_det= pad.folio_ref and  pg.id_estatus_mov in ('K','T') and  b.id_estatus_arch='R'  THEN 'RECHAZADO POR BANCO' 
+          WHEN pg.no_folio_det= pad.no_folio_det and  pg.id_estatus_mov in ('K','T') and  b.id_estatus_arch='R' THEN 'RECHAZADO POR BANCO' 
           WHEN pg.no_folio_det= pad.folio_ref and  pg.id_estatus_mov in ('X') THEN 'CANCELADO' 
           WHEN pp.id_estatus_mov='X' OR pad.id_estatus_mov='X' THEN 'CANCELADO' 
    	  ELSE 'SIN PAGAR'   
