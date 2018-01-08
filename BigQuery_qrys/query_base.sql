@@ -153,8 +153,15 @@ SELECT
 , case when e_pad.empleado_de_la_empresa is not null  then  e_pad.empleado_de_la_empresa else 'PROVEEDOR' end AS Empledao_o_Proveedor_PagoDetalle
 , case when e_pa.empleado_de_la_empresa is not null  then  e_pa.empleado_de_la_empresa else 'PROVEEDOR' end AS Empledao_o_Proveedor_Pago
 , pp.no_cliente as no_cliente_prop
+,e_prop.razon_social as razon_social_prop
+,e_prop.nombre_corto as nombre_corto_prop
 , pad.no_cliente as no_cliente_PagoDet
+,e_pad.razon_social as razon_social_pagoDet
+,e_pad.nombre_corto as nombre_corto_pagoDet
 , pg.no_cliente as no_cliente_Pago
+,e_pa.razon_social as razon_social_pago
+,e_pa.nombre_corto as nombre_corto_pago
+
 , case 
       when      pp.no_cliente is not null 
 			and pad.no_cliente is not null 
@@ -300,3 +307,9 @@ GROUP BY
 ,  pg.id_banco
 ,  pg.id_banco_benef
 ,  pg.id_chequera_pago_benef
+, e_prop.razon_social 
+, e_prop.nombre_corto
+, e_pad.razon_social 
+, e_pad.nombre_corto
+, e_pa.razon_social 
+, e_pa.nombre_corto
