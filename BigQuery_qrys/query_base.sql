@@ -109,6 +109,10 @@ SELECT
    pa.origen_mov_ant origen_mov_ant_pago,
   
   
+  pp.origen_mov as origen_mov_prop,
+  pad.origen_mov as origen_mov_pagoDet,
+  pa.origen_mov as origen_mov_pago,
+  
   
   
     
@@ -142,10 +146,18 @@ SELECT
   pg.id_banco_benef,
   pg.id_chequera_benef,
   CASE    
-          WHEN pg.no_folio_det= pad.folio_ref and  pg.id_estatus_mov in ('K','T') THEN 'PAGADO' 
-          WHEN pg.no_folio_det= pad.no_folio_det and  pg.id_estatus_mov in ('K','T') THEN 'PAGADO'
-          WHEN pg.no_folio_det= pad.folio_ref and  pg.id_estatus_mov in ('X') THEN 'CANCELADO' 
+          WHEN pg.no_folio_det= pad.folio_ref and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch='X' THEN 'CANCELADO'
+		      WHEN pg.no_folio_det= pad.folio_ref and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch='R' THEN 'RECHAZADO BANCO'
+		      WHEN pg.no_folio_det= pad.folio_ref and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch='T' THEN 'PAGADO' 
+          
+          WHEN pg.no_folio_det= pad.no_folio_det and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch='X'  THEN 'CANCELADO'
+          WHEN pg.no_folio_det= pad.no_folio_det and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch='R'  THEN 'RECHAZADO BANCO'
+          WHEN pg.no_folio_det= pad.no_folio_det and  pg.id_estatus_mov in ('K','T')  and pg.id_estatus_arch='T' THEN 'PAGADO'
+		      
+          
+		  WHEN pg.no_folio_det= pad.folio_ref and  pg.id_estatus_mov in ('X') THEN 'CANCELADO' 
           WHEN pp.id_estatus_mov='X' OR pad.id_estatus_mov='X' THEN 'CANCELADO' 
+		
    	  ELSE 'SIN PAGAR'   
    END estatus
 
@@ -308,3 +320,6 @@ GROUP BY
 ,  e_pad.nombre_corto
 ,  e_pa.razon_social 
 ,  e_pa.nombre_corto
+,  pp.origen_mov 
+,  pad.origen_mov 
+,  pa.origen_mov 
