@@ -153,14 +153,14 @@ SELECT
 , case when e_pad.empleado_de_la_empresa is not null  then  e_pad.empleado_de_la_empresa else 'PROVEEDOR' end AS Empledao_o_Proveedor_PagoDetalle
 , case when e_pa.empleado_de_la_empresa is not null  then  e_pa.empleado_de_la_empresa else 'PROVEEDOR' end AS Empledao_o_Proveedor_Pago
 , pp.no_cliente as no_cliente_prop
-,e_prop.razon_social as razon_social_prop
-,e_prop.nombre_corto as nombre_corto_prop
+, e_prop.razon_social as razon_social_prop
+, e_prop.nombre_corto as nombre_corto_prop
 , pad.no_cliente as no_cliente_PagoDet
-,e_pad.razon_social as razon_social_pagoDet
-,e_pad.nombre_corto as nombre_corto_pagoDet
+, e_pad.razon_social as razon_social_pagoDet
+, e_pad.nombre_corto as nombre_corto_pagoDet
 , pg.no_cliente as no_cliente_Pago
-,e_pa.razon_social as razon_social_pago
-,e_pa.nombre_corto as nombre_corto_pago
+, e_pa.razon_social as razon_social_pago
+, e_pa.nombre_corto as nombre_corto_pago
 
 , case 
       when      pp.no_cliente is not null 
@@ -178,18 +178,12 @@ FROM   `mx-herdez-analytics.sethdzqa.TransfPropuestasR3000` pp
 LEFT JOIN   (select * from `mx-herdez-analytics.sethdzqa.TransfPagoDetalleR3201` union all select * from `sethdzqa.TransfPagoDetalleR3201_complemento_viene_3200` )   pad ON  pp.no_docto= pad.no_docto
 LEFT JOIN   `mx-herdez-analytics.sethdzqa.TransfPagosR3200` pa ON   pa.no_docto= pad.no_docto
 LEFT JOIN                                                   pg  ON   pg.no_folio_det= pad.folio_ref 
-
 LEFT JOIN   `mx-herdez-analytics.sethdzqa.cat_banco`        ban_o_pp ON   ban_o_pp.id_banco= pp.id_banco
 LEFT JOIN   `mx-herdez-analytics.sethdzqa.cat_banco`        ban_b_pp ON   ban_b_pp.id_banco= pp.id_banco_benef 
-
 LEFT JOIN   `mx-herdez-analytics.sethdzqa.cat_banco`        ban_o_pad ON   ban_o_pad.id_banco= pad.id_banco     
 LEFT JOIN   `mx-herdez-analytics.sethdzqa.cat_banco`        ban_b_pad ON   ban_b_pad.id_banco= pad.id_banco_benef 
-
 LEFT JOIN   `mx-herdez-analytics.sethdzqa.cat_banco`        ban_o_pa ON   ban_o_pa.id_banco= pg.id_banco      
 LEFT JOIN   `mx-herdez-analytics.sethdzqa.cat_banco`        ban_b_pa ON   ban_b_pa.id_banco= pg.id_banco_benef
-
-
-
 left join `mx-herdez-analytics.sethdzqa.cat_forma_pago`     fp_pp  on   pp.id_forma_pago  = fp_pp.id_forma_pago
 left join `mx-herdez-analytics.sethdzqa.cat_forma_pago`     fp_pad on  pad.id_forma_pago = fp_pad.id_forma_pago
 left join `mx-herdez-analytics.sethdzqa.cat_forma_pago`     fp_pa  on   pg.id_forma_pago  = fp_pa.id_forma_pago
@@ -307,9 +301,9 @@ GROUP BY
 ,  pg.id_banco
 ,  pg.id_banco_benef
 ,  pg.id_chequera_pago_benef
-, e_prop.razon_social 
-, e_prop.nombre_corto
-, e_pad.razon_social 
-, e_pad.nombre_corto
-, e_pa.razon_social 
-, e_pa.nombre_corto
+,  e_prop.razon_social 
+,  e_prop.nombre_corto
+,  e_pad.razon_social 
+,  e_pad.nombre_corto
+,  e_pa.razon_social 
+,  e_pa.nombre_corto
