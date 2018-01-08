@@ -163,18 +163,20 @@ SELECT
 , e_pa.nombre_corto as nombre_corto_pago
 
 , case 
-      when      pp.no_cliente is not null 
+      when      pp.no_cliente  is not null 
 			and pad.no_cliente is not null 
-			and pg.no_cliente is not null then
+			and pg.no_cliente  is not null then
 						case 
-							when pp.no_cliente = pad.no_cliente 
+							when 	pp.no_cliente   = pad.no_cliente 
 								and pad.no_cliente  = pg.no_cliente  then 'No cambio la persona'  
-							else 'Cambio la persona a traves del proceso' end 
-      else '' end
-           as estatus_cambio_persona_proceso 
+							else 'Cambio la persona a traves del proceso' 
+						end 
+      else '' 
+end 
+as estatus_cambio_persona_proceso 
 
 
-FROM   `mx-herdez-analytics.sethdzqa.TransfPropuestasR3000` pp
+FROM        `mx-herdez-analytics.sethdzqa.TransfPropuestasR3000` pp
 LEFT JOIN   (select * from `mx-herdez-analytics.sethdzqa.TransfPagoDetalleR3201` union all select * from `sethdzqa.TransfPagoDetalleR3201_complemento_viene_3200` )   pad ON  pp.no_docto= pad.no_docto
 LEFT JOIN   `mx-herdez-analytics.sethdzqa.TransfPagosR3200` pa ON   pa.no_docto= pad.no_docto
 LEFT JOIN                                                   pg  ON   pg.no_folio_det= pad.folio_ref 
@@ -184,25 +186,24 @@ LEFT JOIN   `mx-herdez-analytics.sethdzqa.cat_banco`        ban_o_pad ON   ban_o
 LEFT JOIN   `mx-herdez-analytics.sethdzqa.cat_banco`        ban_b_pad ON   ban_b_pad.id_banco= pad.id_banco_benef 
 LEFT JOIN   `mx-herdez-analytics.sethdzqa.cat_banco`        ban_o_pa ON   ban_o_pa.id_banco= pg.id_banco      
 LEFT JOIN   `mx-herdez-analytics.sethdzqa.cat_banco`        ban_b_pa ON   ban_b_pa.id_banco= pg.id_banco_benef
-left join `mx-herdez-analytics.sethdzqa.cat_forma_pago`     fp_pp  on   pp.id_forma_pago  = fp_pp.id_forma_pago
-left join `mx-herdez-analytics.sethdzqa.cat_forma_pago`     fp_pad on  pad.id_forma_pago = fp_pad.id_forma_pago
-left join `mx-herdez-analytics.sethdzqa.cat_forma_pago`     fp_pa  on   pg.id_forma_pago  = fp_pa.id_forma_pago
-left join `mx-herdez-analytics.sethdzqa.cat_estatus`        ce_prop on pp.id_estatus_mov = ce_prop.id_estatus and ce_prop.clasificacion='MOV'
-left join `mx-herdez-analytics.sethdzqa.cat_estatus`        ce_pad on pad.id_estatus_mov = ce_pad.id_estatus and ce_pad.clasificacion='MOV'
-left join `mx-herdez-analytics.sethdzqa.cat_estatus`        ce_pa on pg.id_estatus_mov   = ce_pa.id_estatus and ce_pa.clasificacion='MOV'
-left join `mx-herdez-analytics.sethdzqa.seleccion_automatica_grupo` sag on pp.cve_control=sag.cve_control 
-left join  `mx-herdez-analytics.sethdzqa.cat_usuario` u1 on sag.usuario_uno = u1.no_usuario
-left join  `mx-herdez-analytics.sethdzqa.cat_usuario` u2 on sag.usuario_dos = u2.no_usuario
-left join  `mx-herdez-analytics.sethdzqa.cat_usuario` u3 on sag.usuario_tres = u3.no_usuario
-left join  `mx-herdez-analytics.sethdzqa.v_cat_empleados`  e_prop ON   CAST(pp.no_cliente AS STRING) = CAST(e_prop.no_persona AS STRING)
-left join  `mx-herdez-analytics.sethdzqa.v_cat_empleados`  e_pad ON   CAST(pad.no_cliente AS STRING) = CAST(e_pad.no_persona AS STRING)
-left join  `mx-herdez-analytics.sethdzqa.v_cat_empleados`  e_pa ON   CAST(pa.no_cliente AS STRING) = CAST(e_pa.no_persona AS STRING)
-left join `mx-herdez-analytics.sethdzqa.cat_rubro` cr_pp   on cr_pp.id_rubro  =  pp.id_rubro
-left join `mx-herdez-analytics.sethdzqa.cat_rubro` cr_pad  on cr_pad.id_rubro =  pad.id_rubro
-left join `mx-herdez-analytics.sethdzqa.cat_rubro` cr_pa   on cr_pa.id_rubro  =  pg.id_rubro
+left join   `mx-herdez-analytics.sethdzqa.cat_forma_pago`     fp_pp  on   pp.id_forma_pago  = fp_pp.id_forma_pago
+left join   `mx-herdez-analytics.sethdzqa.cat_forma_pago`     fp_pad on  pad.id_forma_pago = fp_pad.id_forma_pago
+left join   `mx-herdez-analytics.sethdzqa.cat_forma_pago`     fp_pa  on   pg.id_forma_pago  = fp_pa.id_forma_pago
+left join   `mx-herdez-analytics.sethdzqa.cat_estatus`        ce_prop on pp.id_estatus_mov = ce_prop.id_estatus and ce_prop.clasificacion='MOV'
+left join   `mx-herdez-analytics.sethdzqa.cat_estatus`        ce_pad on pad.id_estatus_mov = ce_pad.id_estatus and ce_pad.clasificacion='MOV'
+left join   `mx-herdez-analytics.sethdzqa.cat_estatus`        ce_pa on pg.id_estatus_mov   = ce_pa.id_estatus and ce_pa.clasificacion='MOV'
+left join   `mx-herdez-analytics.sethdzqa.seleccion_automatica_grupo` sag on pp.cve_control=sag.cve_control 
+left join   `mx-herdez-analytics.sethdzqa.cat_usuario` u1 on sag.usuario_uno = u1.no_usuario
+left join   `mx-herdez-analytics.sethdzqa.cat_usuario` u2 on sag.usuario_dos = u2.no_usuario
+left join   `mx-herdez-analytics.sethdzqa.cat_usuario` u3 on sag.usuario_tres = u3.no_usuario
+left join   `mx-herdez-analytics.sethdzqa.v_cat_empleados`  e_prop ON   CAST(pp.no_cliente AS STRING) = CAST(e_prop.no_persona AS STRING)
+left join   `mx-herdez-analytics.sethdzqa.v_cat_empleados`  e_pad ON   CAST(pad.no_cliente AS STRING) = CAST(e_pad.no_persona AS STRING)
+left join   `mx-herdez-analytics.sethdzqa.v_cat_empleados`  e_pa ON   CAST(pa.no_cliente AS STRING) = CAST(e_pa.no_persona AS STRING)
+left join   `mx-herdez-analytics.sethdzqa.cat_rubro` cr_pp   on cr_pp.id_rubro  =  pp.id_rubro
+left join   `mx-herdez-analytics.sethdzqa.cat_rubro` cr_pad  on cr_pad.id_rubro =  pad.id_rubro
+left join   `mx-herdez-analytics.sethdzqa.cat_rubro` cr_pa   on cr_pa.id_rubro  =  pg.id_rubro
 WHERE
   1=1
-
 GROUP BY
    pp.no_docto
 ,  pa.id_banco_benef
@@ -210,7 +211,7 @@ GROUP BY
 ,  pp.id_banco
 ,  pad.id_banco
 ,  pp.id_chequera
-,   upper(trim(pg.nom_arch))
+,  upper(trim(pg.nom_arch))
 ,  CASE     WHEN pa.no_folio_det=pad.folio_ref THEN 'PAGADO' END
 ,  pa.no_folio_det
 ,  pad.folio_ref
@@ -229,7 +230,7 @@ GROUP BY
 --,  FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pa.fec_valor)) 
 ,  ban_o_pp.desc_banco
 ,  ban_b_pp.desc_banco
-,   ban_o_pa.desc_banco
+,  ban_o_pa.desc_banco
 ,  ban_b_pa.desc_banco
 ,  ban_o_pad.desc_banco
 ,  ban_b_pad.desc_banco
