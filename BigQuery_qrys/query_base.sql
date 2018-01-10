@@ -44,6 +44,8 @@
     a.id_chequera_benef
 	)
 SELECT
+  zi.fec_valor as fec_valor_zimp_fact,
+  zex.fec_valor as fec_valor_zex_fact,
   FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pp.fec_valor)) AS FechaPropuestaPago,
   --FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pad.fec_valor)) AS fecha_pagoDet,
   --FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pa.fec_valor)) AS FechaPago,
@@ -51,6 +53,7 @@ SELECT
   --FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pad.fec_valor_original)) AS FechaPagoDet_Original,
   --FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pa.fec_valor_original)) AS FechaPago_Original,
   sag.fecha_pago as FechaPagoSag,
+  zi.no_doc_sap,
   pp.no_docto,
   sag.cve_control,
   sag.fecha_propuesta,
@@ -72,10 +75,12 @@ SELECT
  
  pp.id_banco AS id_banco_prop_otorgante,
  ban_o_pp.desc_banco AS desc_banco_prop_otorgante,
+ zex.id_cheque as id_cheque_otorgante_zexp_fact ,
  pp.id_chequera AS id_chequera_prop_otorgante,
  pp.id_banco_benef AS id_banco_prop_benef,
  ban_b_pp.desc_banco AS desc_banco_prop_benef,
  pp.id_chequera_benef AS id_chequera_pop_benef,
+ zex.chequera_inv  as chequera_inv_benef_zexp_fact,
  
   pad.id_banco AS id_banco_pagoDet_otorgante,
   ban_o_pad.desc_banco AS desc_banco_pagoDet_otorgante,
@@ -108,12 +113,15 @@ SELECT
    pa.no_cliente_ant no_cliente_ant_pago,
    pa.origen_mov_ant origen_mov_ant_pago,
   
-  
+  zex.origen as origen_exp_fact,
+  zi.origen as origen_zimp_fact,
   pp.origen_mov as origen_mov_prop,
   pad.origen_mov as origen_mov_pagoDet,
   pa.origen_mov as origen_mov_pago,
   
-  
+zex.tipo_camb as tipo_cambio_zexp_fact,
+zex.fecha_imp  as fecha_imp_zexp_fact,
+zex.rubro_erp rubro_erp__zexp_fact,
   
     
   pp.id_estatus_mov id_estatus_prop,
@@ -123,18 +131,21 @@ SELECT
   pg.id_estatus_mov id_estatus_pago,  
   ce_pa.desc_estatus as desc_estatus_Pago,
 
-  
+  zex.forma_pago as forma_pago_zexp_fact,
   fp_pp.desc_forma_pago as FormaPagoProp,
   fp_pad.desc_forma_pago as FormaPagoPagpDet,
   fp_pa.desc_forma_pago as FormaPago,
   
+  zex.id_divisa as divisa_zexp_fact,
+  zi.id_divisa as divisa_zimp_fact,
   pp.id_divisa as divisa_prop,
   pp.id_divisa_original as divisa_original_prop,
   pad.id_divisa as divisa_PagoDet,
    pad.id_divisa_original as divisa_original_PagoDet,
   pg.divisa_Pago,
   pg.divisa_original_Pago,
-  
+  SUM(COALESCE (zex.imp_pago,0)) AS imp_pago_zexp_fact,
+  SUM(COALESCE (zi.importe,0)) AS importe_zimp_fact,
   SUM(COALESCE (pp.importe,0)) AS  importe_propuesta,
   SUM(COALESCE (pad.importe,0)) AS importe_PagadoDet,
   -- SUM(COALESCE (pa.importe,0)) AS  importe_Pagado,
@@ -164,6 +175,9 @@ SELECT
 , case when e_prop.empleado_de_la_empresa is not null  then  e_prop.empleado_de_la_empresa else 'PROVEEDOR' end AS Empledao_o_Proveedor_prop
 , case when e_pad.empleado_de_la_empresa is not null  then  e_pad.empleado_de_la_empresa else 'PROVEEDOR' end AS Empledao_o_Proveedor_PagoDetalle
 , case when e_pa.empleado_de_la_empresa is not null  then  e_pa.empleado_de_la_empresa else 'PROVEEDOR' end AS Empledao_o_Proveedor_Pago
+, zi.no_benef
+, zex.no_persona as cliente_zexp_fact
+, e_zi.no_persona as cliente_zimp_fact
 , pp.no_cliente as no_cliente_prop
 , e_prop.razon_social as razon_social_prop
 , e_prop.nombre_corto as nombre_corto_prop
@@ -186,9 +200,12 @@ SELECT
       else '' 
 end 
 as estatus_cambio_persona_proceso 
-
-
-FROM        `mx-herdez-analytics.sethdzqa.TransfPropuestasR3000` pp
+,zex.fecha_exp as zex_fecha_exp
+,zex.estatus as zex_estatus
+,zex.causa_rech as zex_causa_rech
+,zex.folio_as400
+FROM        `mx-herdez-analytics.sethdzqa.v_zimp_fact_trans` zi 
+LEFT JOIN   `mx-herdez-analytics.sethdzqa.TransfPropuestasR3000` pp on  zi.no_doc_sap=pp.no_docto 
 LEFT JOIN   (select * from `mx-herdez-analytics.sethdzqa.TransfPagoDetalleR3201` union all select * from `sethdzqa.TransfPagoDetalleR3201_complemento_viene_3200` )   pad ON  pp.no_docto= pad.no_docto
 LEFT JOIN   `mx-herdez-analytics.sethdzqa.TransfPagosR3200` pa ON   pa.no_docto= pad.no_docto
 LEFT JOIN                                                   pg  ON   pg.no_folio_det= pad.folio_ref 
@@ -214,8 +231,11 @@ left join   `mx-herdez-analytics.sethdzqa.v_cat_empleados`  e_pa ON   CAST(pa.no
 left join   `mx-herdez-analytics.sethdzqa.cat_rubro` cr_pp   on cr_pp.id_rubro  =  pp.id_rubro
 left join   `mx-herdez-analytics.sethdzqa.cat_rubro` cr_pad  on cr_pad.id_rubro =  pad.id_rubro
 left join   `mx-herdez-analytics.sethdzqa.cat_rubro` cr_pa   on cr_pa.id_rubro  =  pg.id_rubro
+left join   `mx-herdez-analytics.sethdzqa.zexp_fact` zex on pp.no_docto=zex.no_doc_sap
+left join   `mx-herdez-analytics.sethdzqa.v_cat_empleados`  e_zi ON   CAST(zi.no_benef AS STRING) = CAST(e_zi.equivale_persona AS STRING)
 WHERE
   1=1
+  
 GROUP BY
    pp.no_docto
 ,  pa.id_banco_benef
@@ -323,3 +343,24 @@ GROUP BY
 ,  pp.origen_mov 
 ,  pad.origen_mov 
 ,  pa.origen_mov 
+
+, zex.fecha_exp
+, zex.estatus
+, zex.causa_rech
+, zex.folio_as400
+, zex.id_divisa
+, zex.origen
+, zex.no_persona
+, zex.fec_valor
+, zex.tipo_camb
+, zex.forma_pago 
+, zex.id_cheque 
+, zex.fecha_imp 
+, zex.chequera_inv 
+, zex.rubro_erp 
+, zi.no_benef
+, zi.origen
+, zi.id_divisa
+, zi.fec_valor
+, zi.no_doc_sap
+, e_zi.no_persona
