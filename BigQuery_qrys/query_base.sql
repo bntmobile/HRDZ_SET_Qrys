@@ -44,9 +44,6 @@
     a.id_chequera_benef
 	)
 SELECT
-  zi.no_empresa as no_empresa__zimp_fact,
-  st.SOIEMP as no_empresa_mov_fact_traduccion,
- -- pp.no_empresa as no_empresa_prop,
   zi.fec_valor as fec_valor_zimp_fact,
   zex.fec_valor as fec_valor_zex_fact,
   FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pp.fec_valor)) AS FechaPropuestaPago,
@@ -56,8 +53,8 @@ SELECT
   --FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pad.fec_valor_original)) AS FechaPagoDet_Original,
   --FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pa.fec_valor_original)) AS FechaPago_Original,
   sag.fecha_pago as FechaPagoSag,
-  zi.no_doc_sap,
-  pp.no_docto,
+  zi.no_doc_sap as no_doc_sap_zimp_fact ,
+  pp.no_docto as no_docto_prop ,
   sag.cve_control,
   sag.fecha_propuesta,
   sag.concepto,
@@ -236,7 +233,6 @@ left join   `mx-herdez-analytics.sethdzqa.cat_rubro` cr_pad  on cr_pad.id_rubro 
 left join   `mx-herdez-analytics.sethdzqa.cat_rubro` cr_pa   on cr_pa.id_rubro  =  pg.id_rubro
 left join   `mx-herdez-analytics.sethdzqa.zexp_fact` zex on pp.no_docto=zex.no_doc_sap
 left join   `mx-herdez-analytics.sethdzqa.v_cat_empleados`  e_zi ON   CAST(zi.no_benef AS STRING) = CAST(e_zi.equivale_persona AS STRING)
-left join   `mx-herdez-analytics.sethdzqa.SET006`  st on  pp.no_empresa = st.SETEMP   AND st.SISCOD= 'CP' 
 WHERE
   1=1
   
@@ -368,7 +364,3 @@ GROUP BY
 , zi.fec_valor
 , zi.no_doc_sap
 , e_zi.no_persona
-, st.SOIEMP 
---, pp.no_empresa 
-, zi.no_empresa
-
