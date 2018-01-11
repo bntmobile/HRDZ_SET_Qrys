@@ -124,6 +124,8 @@ zex.fecha_imp  as fecha_imp_zexp_fact,
 zex.rubro_erp rubro_erp__zexp_fact,
   
     
+  zi.forma_pago as forma_pago_zimp_fact,
+  fp_zi.desc_forma_pago as desc_estatus_zimp_fact,
   pp.id_estatus_mov id_estatus_prop,
   ce_prop.desc_estatus as desc_estatus_prop,
   pad.id_estatus_mov id_estatus_pagoDet,
@@ -150,7 +152,7 @@ zex.rubro_erp rubro_erp__zexp_fact,
   SUM(COALESCE (pad.importe,0)) AS importe_PagadoDet,
   -- SUM(COALESCE (pa.importe,0)) AS  importe_Pagado,
   SUM(COALESCE (pg.importe,0)) AS importe_Pagado,
-  
+  SUM(COALESCE (zi.importe,0)) -  SUM(COALESCE (pad.importe,0)) Importe_Diferencia_entre_zimp_fact_propuesta,  
   SUM(COALESCE (pp.importe,0)) -  SUM(COALESCE (pad.importe,0)) Importe_Diferencia_entre_propuesta_pagado,
   upper(trim(pg.nom_arch)) as nom_arch,
   pg.id_estatus_arch,
@@ -233,6 +235,8 @@ left join   `mx-herdez-analytics.sethdzqa.cat_rubro` cr_pad  on cr_pad.id_rubro 
 left join   `mx-herdez-analytics.sethdzqa.cat_rubro` cr_pa   on cr_pa.id_rubro  =  pg.id_rubro
 left join   `mx-herdez-analytics.sethdzqa.zexp_fact` zex on pp.no_docto=zex.no_doc_sap
 left join   `mx-herdez-analytics.sethdzqa.v_cat_empleados`  e_zi ON   CAST(zi.no_benef AS STRING) = CAST(e_zi.equivale_persona AS STRING)
+left join   `mx-herdez-analytics.sethdzqa.cat_forma_pago`     fp_zi  on   fp_zi.id_forma_pago  = zi.forma_pago
+
 WHERE
   1=1
   
@@ -363,4 +367,9 @@ GROUP BY
 , zi.id_divisa
 , zi.fec_valor
 , zi.no_doc_sap
+, zi.forma_pago
 , e_zi.no_persona
+, fp_zi.desc_forma_pago
+
+
+
