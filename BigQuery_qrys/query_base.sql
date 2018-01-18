@@ -161,13 +161,10 @@ zex.rubro_erp rubro_erp__zexp_fact,
   pg.id_chequera_benef,
   CASE    
           WHEN pg.no_folio_det= pad.folio_ref and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch='X' THEN 'CANCELADO'
-		      WHEN pg.no_folio_det= pad.folio_ref and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch='R' THEN 'RECHAZADO BANCO'
-		      WHEN pg.no_folio_det= pad.folio_ref and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch='T' THEN 'PAGADO' 
+		      -- WHEN pg.no_folio_det= pad.folio_ref and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch='R' THEN 'RECHAZADO BANCO'
+		      WHEN pg.no_folio_det= pad.folio_ref and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch IN ('T','R') THEN 'PAGADO' 
           
-          WHEN pg.no_folio_det= pad.no_folio_det and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch='X'  THEN 'CANCELADO'
-          WHEN pg.no_folio_det= pad.no_folio_det and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch='R'  THEN 'RECHAZADO BANCO'
-          WHEN pg.no_folio_det= pad.no_folio_det and  pg.id_estatus_mov in ('K','T')  and pg.id_estatus_arch='T' THEN 'PAGADO'
-		      
+              
           
 		  WHEN pg.no_folio_det= pad.folio_ref and  pg.id_estatus_mov in ('X') THEN 'CANCELADO' 
           WHEN pp.id_estatus_mov='X' OR pad.id_estatus_mov='X' THEN 'CANCELADO' 
@@ -241,8 +238,7 @@ left join   `mx-herdez-analytics.sethdzqa.v_cat_empleados_proveedores`  e_zi ON 
 left join   `mx-herdez-analytics.sethdzqa.cat_forma_pago`     fp_zi  on   fp_zi.id_forma_pago  = zi.forma_pago
 
 WHERE
-  1=1
-  
+
 GROUP BY
    pp.no_docto
 ,  pa.id_banco_benef
