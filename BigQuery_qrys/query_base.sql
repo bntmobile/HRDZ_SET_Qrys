@@ -57,6 +57,7 @@ SELECT
   pp.no_docto as no_docto_prop ,
   sag.cve_control,
   sag.fecha_propuesta,
+   e_prop.KdDiasPlazo,
   sag.concepto,
    cr_pp.id_rubro as id_rubro_prop,
    cr_pp.desc_rubro as desc_rubro_prop,
@@ -206,6 +207,8 @@ as estatus_cambio_persona_proceso
 ,zex.estatus as zex_estatus
 ,zex.causa_rech as zex_causa_rech
 ,zex.folio_as400
+,  cast(SUBSTR(cast(SUM(COALESCE (pa.importe,0)) as string),0,1) as int64) as digitoImporte
+
 FROM        `mx-herdez-analytics.sethdzqa.v_zimp_fact_trans` zi 
 LEFT JOIN   `mx-herdez-analytics.sethdzqa.TransfPropuestasR3000` pp on  zi.no_doc_sap=pp.no_docto 
 LEFT JOIN   (select * from `mx-herdez-analytics.sethdzqa.TransfPagoDetalleR3201` union all select * from `sethdzqa.TransfPagoDetalleR3201_complemento_viene_3200` )   pad ON  pp.no_docto= pad.no_docto
@@ -227,14 +230,14 @@ left join   `mx-herdez-analytics.sethdzqa.seleccion_automatica_grupo` sag on pp.
 left join   `mx-herdez-analytics.sethdzqa.cat_usuario` u1 on sag.usuario_uno = u1.no_usuario
 left join   `mx-herdez-analytics.sethdzqa.cat_usuario` u2 on sag.usuario_dos = u2.no_usuario
 left join   `mx-herdez-analytics.sethdzqa.cat_usuario` u3 on sag.usuario_tres = u3.no_usuario
-left join   `mx-herdez-analytics.sethdzqa.v_cat_empleados`  e_prop ON   CAST(pp.no_cliente AS STRING) = CAST(e_prop.no_persona AS STRING)
-left join   `mx-herdez-analytics.sethdzqa.v_cat_empleados`  e_pad ON   CAST(pad.no_cliente AS STRING) = CAST(e_pad.no_persona AS STRING)
-left join   `mx-herdez-analytics.sethdzqa.v_cat_empleados`  e_pa ON   CAST(pa.no_cliente AS STRING) = CAST(e_pa.no_persona AS STRING)
+left join   `mx-herdez-analytics.sethdzqa.v_cat_empleados_proveedores`  e_prop ON   CAST(pp.no_cliente AS STRING) = CAST(e_prop.no_persona AS STRING)
+left join   `mx-herdez-analytics.sethdzqa.v_cat_empleados_proveedores`  e_pad ON   CAST(pad.no_cliente AS STRING) = CAST(e_pad.no_persona AS STRING)
+left join   `mx-herdez-analytics.sethdzqa.v_cat_empleados_proveedores`  e_pa ON   CAST(pa.no_cliente AS STRING) = CAST(e_pa.no_persona AS STRING)
 left join   `mx-herdez-analytics.sethdzqa.cat_rubro` cr_pp   on cr_pp.id_rubro  =  pp.id_rubro
 left join   `mx-herdez-analytics.sethdzqa.cat_rubro` cr_pad  on cr_pad.id_rubro =  pad.id_rubro
 left join   `mx-herdez-analytics.sethdzqa.cat_rubro` cr_pa   on cr_pa.id_rubro  =  pg.id_rubro
 left join   `mx-herdez-analytics.sethdzqa.zexp_fact` zex on pp.no_docto=zex.no_doc_sap
-left join   `mx-herdez-analytics.sethdzqa.v_cat_empleados`  e_zi ON   CAST(zi.no_benef AS STRING) = CAST(e_zi.equivale_persona AS STRING)
+left join   `mx-herdez-analytics.sethdzqa.v_cat_empleados_proveedores`  e_zi ON   CAST(zi.no_benef AS STRING) = CAST(e_zi.equivale_persona AS STRING)
 left join   `mx-herdez-analytics.sethdzqa.cat_forma_pago`     fp_zi  on   fp_zi.id_forma_pago  = zi.forma_pago
 
 WHERE
@@ -370,6 +373,7 @@ GROUP BY
 , zi.forma_pago
 , e_zi.no_persona
 , fp_zi.desc_forma_pago
-
+, e_prop.KdDiasPlazo
+ 
 
 
