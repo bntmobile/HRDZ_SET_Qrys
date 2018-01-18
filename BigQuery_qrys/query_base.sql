@@ -1,4 +1,4 @@
-  WITH pg AS (
+ WITH pg AS (
   SELECT
     a.no_folio_det,
     a.no_docto,
@@ -7,24 +7,22 @@
     b.id_estatus_arch,
     b.id_chequera_benef,
     b.id_banco_benef,
-	a.importe,
-	a.no_cliente,
+	  a.importe,
+	  a.no_cliente,
     a.id_divisa as divisa_Pago,
     a.id_divisa_original as divisa_original_Pago,
-	a.id_forma_pago,
-	a.id_rubro,
-	a.id_banco,
+	  a.id_forma_pago,
+	  a.id_rubro,
+	  a.id_banco,
     a.id_chequera AS id_chequera_pago_otorgante,
-    a.id_chequera_benef AS id_chequera_pago_benef
-  
-  FROM
-    `mx-herdez-analytics.sethdzqa.TransfPagosR3200` a
-  INNER JOIN
-    `mx-herdez-analytics.sethdzqa.det_arch_transfer` b
-  ON
-    a.no_folio_det=b.no_folio_det
+    a.id_chequera_benef AS id_chequera_pago_benef,
+    case when a.grupo_pago=0  then a.folio_ref else a.grupo_pago end as grupo_pago,
+    a.folio_ref
+  FROM    `mx-herdez-analytics.sethdzqa.TransfPagosR3200` a
+  INNER JOIN    `mx-herdez-analytics.sethdzqa.det_arch_transfer` b   ON a.no_folio_det=b.no_folio_det
   WHERE
     a.id_estatus_mov IN ('K','T','X')
+  --  and a.no_docto in (    '009649835','009649836','009649837','009649838','009649839','009649840','009649841','009645355','009645810')
   GROUP BY
     a.no_folio_det,
     a.id_estatus_mov,
@@ -37,13 +35,16 @@
     a.no_cliente,
     a.id_divisa ,
     a.id_divisa_original,
-	a.id_forma_pago,
-	a.id_rubro,
-	a.id_banco ,
+	  a.id_forma_pago,
+	  a.id_rubro,
+	  a.id_banco ,
     a.id_chequera ,
-    a.id_chequera_benef
+    a.id_chequera_benef,
+    case when a.grupo_pago=0  then a.folio_ref else a.grupo_pago end,
+    a.folio_ref
 	)
-SELECT
+
+SELECT 
   zi.fec_valor as fec_valor_zimp_fact,
   zex.fec_valor as fec_valor_zex_fact,
   FORMAT_DATE( "%d/%m/%Y",    extract(date    FROM      pp.fec_valor)) AS FechaPropuestaPago,
@@ -160,13 +161,12 @@ zex.rubro_erp rubro_erp__zexp_fact,
   pg.id_banco_benef,
   pg.id_chequera_benef,
   CASE    
-          WHEN pg.no_folio_det= pad.folio_ref and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch='X' THEN 'CANCELADO'
-		      -- WHEN pg.no_folio_det= pad.folio_ref and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch='R' THEN 'RECHAZADO BANCO'
-		      WHEN pg.no_folio_det= pad.folio_ref and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch IN ('T','R') THEN 'PAGADO' 
+          WHEN pg.grupo_pago= pad.grupo_pago and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch='X' THEN 'CANCELADO'
+		      --WHEN pg.no_folio_det= pad.folio_ref and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch='R' THEN 'RECHAZADO BANCO'
+		      WHEN pg.grupo_pago= pad.grupo_pago and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch in ('T','R') THEN 'PAGADO' 
+                
           
-              
-          
-		  WHEN pg.no_folio_det= pad.folio_ref and  pg.id_estatus_mov in ('X') THEN 'CANCELADO' 
+		  WHEN pg.grupo_pago= pad.grupo_pago and  pg.id_estatus_mov in ('X') THEN 'CANCELADO' 
           WHEN pp.id_estatus_mov='X' OR pad.id_estatus_mov='X' THEN 'CANCELADO' 
 		
    	  ELSE 'SIN PAGAR'   
@@ -204,13 +204,12 @@ as estatus_cambio_persona_proceso
 ,zex.estatus as zex_estatus
 ,zex.causa_rech as zex_causa_rech
 ,zex.folio_as400
-,  cast(SUBSTR(cast(SUM(COALESCE (pa.importe,0)) as string),0,1) as int64) as digitoImporte
-
+,  cast(SUBSTR(cast(SUM(COALESCE (pad.importe,0)) as string),0,1) as int64) as digitoImporte
 FROM        `mx-herdez-analytics.sethdzqa.v_zimp_fact_trans` zi 
 LEFT JOIN   `mx-herdez-analytics.sethdzqa.TransfPropuestasR3000` pp on  zi.no_doc_sap=pp.no_docto 
-LEFT JOIN   (select * from `mx-herdez-analytics.sethdzqa.TransfPagoDetalleR3201` union all select * from `sethdzqa.TransfPagoDetalleR3201_complemento_viene_3200` )   pad ON  pp.no_docto= pad.no_docto
+LEFT JOIN   (select * from `mx-herdez-analytics.sethdzqa.TransfPagoDetalleR3201` union all select * from `sethdzqa.v_complemento_v2` )   pad ON  pp.no_docto= pad.no_docto
 LEFT JOIN   `mx-herdez-analytics.sethdzqa.TransfPagosR3200` pa ON   pa.no_docto= pad.no_docto
-LEFT JOIN                                                   pg  ON   pg.no_folio_det= pad.folio_ref 
+LEFT JOIN                                                   pg  ON   pg.grupo_pago= pad.grupo_pago 
 LEFT JOIN   `mx-herdez-analytics.sethdzqa.cat_banco`        ban_o_pp ON   ban_o_pp.id_banco= pp.id_banco
 LEFT JOIN   `mx-herdez-analytics.sethdzqa.cat_banco`        ban_b_pp ON   ban_b_pp.id_banco= pp.id_banco_benef 
 LEFT JOIN   `mx-herdez-analytics.sethdzqa.cat_banco`        ban_o_pad ON   ban_o_pad.id_banco= pad.id_banco     
@@ -238,7 +237,9 @@ left join   `mx-herdez-analytics.sethdzqa.v_cat_empleados_proveedores`  e_zi ON 
 left join   `mx-herdez-analytics.sethdzqa.cat_forma_pago`     fp_zi  on   fp_zi.id_forma_pago  = zi.forma_pago
 
 WHERE
+  1=1
 
+  
 GROUP BY
    pp.no_docto
 ,  pa.id_banco_benef
@@ -370,6 +371,6 @@ GROUP BY
 , e_zi.no_persona
 , fp_zi.desc_forma_pago
 , e_prop.KdDiasPlazo
- 
-
+, pg.grupo_pago
+, pad.grupo_pago
 
