@@ -239,7 +239,7 @@ left join   `mx-herdez-analytics.sethdzqa.cat_forma_pago`     fp_zi  on   fp_zi.
 
 WHERE
   1=1
-
+-- and pp.no_docto in ('009649835','009649836','009649837','009649838','009649839','009649840','009649841','009645355','009645810') 
   
 GROUP BY
    pp.no_docto
