@@ -59,6 +59,7 @@ SELECT
   sag.cve_control,
   sag.fecha_propuesta,
    e_prop.KdDiasPlazo,
+   DATE_ADD(EXTRACT( date from sag.fecha_propuesta), interval cast(e_prop.KdDiasPlazo as int64) DAY ) FechaPropuestaMadDiasPlazoProveedor ,
   sag.concepto,
    cr_pp.id_rubro as id_rubro_prop,
    cr_pp.desc_rubro as desc_rubro_prop,
