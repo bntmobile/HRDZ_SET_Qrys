@@ -18,7 +18,8 @@
     a.id_chequera_benef AS id_chequera_pago_benef,
     case when a.grupo_pago=0  then a.folio_ref else a.grupo_pago end as grupo_pago,
     a.folio_ref
-  FROM    `mx-herdez-analytics.sethdzqa.TransfPagosR3200` a
+   FROM `mx-herdez-analytics.sethdzqa.v_zimp_fact_trans` t1
+  left join  `mx-herdez-analytics.sethdzqa.TransfPagosR3200` a on t1.no_doc_sap= a.no_docto
   INNER JOIN    `mx-herdez-analytics.sethdzqa.det_arch_transfer` b   ON a.no_folio_det=b.no_folio_det
   WHERE
     a.id_estatus_mov IN ('K','T','X')
@@ -241,7 +242,7 @@ left join   `mx-herdez-analytics.sethdzqa.cat_forma_pago`     fp_zi  on   fp_zi.
 WHERE
   1=1
 -- and pp.no_docto in ('009649835','009649836','009649837','009649838','009649839','009649840','009649841','009645355','009645810') 
-  
+ 
 GROUP BY
    pp.no_docto
 ,  pa.id_banco_benef
