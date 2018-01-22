@@ -164,7 +164,8 @@ zex.rubro_erp rubro_erp__zexp_fact,
   CASE    
           WHEN pg.grupo_pago= pad.grupo_pago and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch='X' THEN 'CANCELADO'
 		      --WHEN pg.no_folio_det= pad.folio_ref and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch='R' THEN 'RECHAZADO BANCO'
-		      WHEN pg.grupo_pago= pad.grupo_pago and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch in ('T','R') THEN 'PAGADO' 
+		      WHEN pg.grupo_pago= pad.grupo_pago and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch in ('T') THEN 'PAGADO' 
+			   WHEN pg.grupo_pago= pad.grupo_pago and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch in ('T','R') THEN 'REGENERADO PAGADO' 
                 
           
 		  WHEN pg.grupo_pago= pad.grupo_pago and  pg.id_estatus_mov in ('X') THEN 'CANCELADO' 
