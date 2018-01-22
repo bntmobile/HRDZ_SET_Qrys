@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "mx-herdez-analytics",
+  "private_key_id": "cf83fcf5fcc3942d4bfe00225cde4d20f73d0ea9",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQD0b1SAiob9lzp9\nORkI7HQooxGaFXdoVHfEJFMRrggxk7fzN2tqT24IJ48Mfys+B6kgTQdTchcY81H5\nDZwUQ/ImeUorikBk0BSM3hRjuOgi+p9jrarQq87QryFxzQNuuOsPuqep/oAPe7yd\nhPdcCzBmXHWVatzoSYl2YFvVBYXLvKHNf2viiBeHCnldg705Q1K8HwHrYnFmZT+a\nZYepRJ/GnT1HcIk5vn5d2WJUzdfyit1kuZs2yUMJorfc/diCyFMeURhHy8YrCHrh\nJanfStkQsqmfR2qJEcpmQEdyOpadbjNvmKd4UTdlkxUIqBkdI7Wb1LFQRgv01vCU\nlf5G1qzHAgMBAAECggEANMYSmvwNoBO2C5I3zv7qJ1nps3g+Axb1krH7A16tIzMO\n7KKC/P1wNq9/yYVtSyOxRqmK0t/Xj8n84UYodBGlZtwaAOOE+p8YSL+r7EngSKkO\nn6E/t3TYnqKpGF5Yht/C1G8Kwv+RG4auFt4937AEv5znwB5F2psB5D5ypT/ffrhr\ntpx3MXQETCgDOS4smJq0VFvXnPXLrqTNkFosLEMZBNdordVhEdA4ckEsSp+t58kj\ne2mmXC4+dP588gHq+tESHa48xJS31vgNaBmlSR1xjEbpgaXzDjFebsmVNw2OI1e5\nheMV902Jqp3fK7vfKolM8CEZ3fulyNDaufpSy87TTQKBgQD/QqCcyuhYnd9Y1ePM\nwlT9sv9VV24KOQ0hkQfNaCtS0H6HQ2zxfJOHjTrLrMBQbjzZqx0JRwEuoqHsgR+0\n1cxT3HVpqquI6XYVwbEitGdolYCcumLF3B4Y9UWjYf9qLAGh2wSr+Pm2vLQN5LPH\nRW8AfMKQ2e8vVQsHVMml0E9U1QKBgQD1JKvrEuXnarSKuGUdlQ8CKWgd96DEkA6m\nICreegf0MQxv68A8bny/Irrt+X8vnW838GlTvyfzDbVgd+eQ13lFV9WKZVaCW2tB\nDX0GRZIcT5WQJ3lxAoWWwIXDYQumcVYLwdEAh3ccWhrRhXjk9qmr6d57VuTtrVPE\nXJLOcSA5KwKBgEPAeIcFaGRVCvo2U29+yTZJc3JAcYmvGOgm6Y5ArvcdNehLIjh6\nm2HoP4neAXGXwPj5bQyQVyT8r8PphfPmp4Q+yL9SOJNvfBNMROr0PVpKDEgNRLhF\ns4tmVqSGF1gj9A705imLPSSes5/Ya0tiB5N2ieIOpmjGxtWcUKV9RAE9AoGAWb8g\nNYKIqq1VBYg2dJsSkI8KMBZtRCkdQ9J4/1Qbv1mJnRvpF/a3Mt6LIv55grwXcJpS\nZTeRb5kwMu4S1+Ma4bkjU3SANF81p+5BPF+R+01jiw/4lNgAgk1fa0UHF9tcTheZ\n5aCyia2vLc+4j9KCEY8gRXVtgFo5VaUyleOykVsCgYA0yxdr9zWTD6QwhAZaFK51\nQzY0/Zjj/V9Yd8435J/knMxrDuF04F3kYNNRQndMT1Na1fJayBVILtyzlX9j/iD3\nPEZTkDLYyMZUAnE7TRSzbJgCR1q+xhxTFZYyYLrPSyVq3qYzDYTw7sKYEIAfgXZi\nPIhhrsqrHgjo8wwMS8JnRg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "big-query@mx-herdez-analytics.iam.gserviceaccount.com",
+  "client_id": "113993072091448150473",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/big-query%40mx-herdez-analytics.iam.gserviceaccount.com"
+}

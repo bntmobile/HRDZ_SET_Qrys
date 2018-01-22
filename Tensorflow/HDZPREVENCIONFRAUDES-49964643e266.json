@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "hdzprevencionfraudes",
+  "private_key_id": "49964643e266ebc1a3763bda8a4b67dc44abbbd8",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDOAu+i3tiPljgt\nzKAw191YIoNtNaY7hW44HydYud7ZkAaCYWSob2FRpxiLv8S0eqFEAWOxy11HBHGh\nm8xRmY2+gRW28nEtSiNpontb0JB3zNVl4R42WRrrm/Aoscv837Hajvnh8Rag8T/6\ndV/cfjVOf6HK7pUTQugpi4ES7nPPO1sYCW2TCHIPTFas+colCpA48sSkcsWUbkiy\nQowhzecmGJY/Dr7PRuXlhf8EJaZC4b2T+J1ZiSLNcKQ/GOaCndHqIk9QFWsX1grA\nrkLQ31VRfCJ2vr1Mrsy8i6DXniTZpjSj5/c1TbMKagnzbi8pwtH7h1UQR8nWjvEC\nQCohFNQ/AgMBAAECggEAG0qUSHVRJyR1aMvU5OOT9RsNYihbT0NL6K9n3P8yoIvN\n8PPKC+5FbDXAsLLE8kvUlVfBx0nzn3bdPtWO6bh36KbdI5FWoPNTYakewnkMynIe\nSxLZl8WSJWhRFnMHXQadXyDVxbLUlpmfKiTmgCVQFogd/O5CXXzdmLNcdA+W0/sB\n/Prxmwt81f4JuXfpDe98YMFL0P3tj/oHSrSB8qDH8v8jJSa9waEqLFi/fkGF3+Tn\nmDu+rAGMXAbW2aDxfeydzzmhipsZ/lVa94E3d7gY9U84qMFAu9Of7MiDH2NzVw3G\nS60j7LK53LcYigPKoB7f+BiPnZNQNFopsn3l0rgu4QKBgQD4IQm58lq/IIu+tC3D\n1BpwxanIT0KiMCh2V6ilS/mPRUhaCh0MGYTlGwHGAhOYDuJdWn5v6XMImWvAYgGp\nKB2q7Ssb9lrgtgGt4miesGluUyQXEOijegFOM/ZSFCXoF+YuTSlzSxCq0lhoaQ8u\nqeQ4C4QrT8gOIzg18MzDNp4gSQKBgQDUi+CL/5eWdtXVBeZPn6aEDOsVn551qUhh\nC8LAHaL3WLtLtUWW3S7uZ/I2Fr1tDFhSVRiNGUWutW23res2i8xpZV0VJkkeXGxb\nEt7Dpkg80O4DQqHdwc0NS0w+UClPfsiJNxexkIWcX+f1mkixAc0GXAjVPX5TCLhj\nTDMNuyrgRwKBgQCA8GolfpM5jqgPyYGeqbGzuIOp28Y8kdn05Uh13S0qDk6yu16s\n0vYEOCyLwLh94/4tlMDvVti4N0GPD17dkEMad3RXa4V+EBZ/TZAgJnwjIIE4m0jI\n6rWS9d2ieWXZXdH3bZGEoBVhLz1RxIZnMVGu7g0YlLTY4+Rp42AEcXVqQQKBgBZt\n/HBJtLGIMOCeEsPsUSI2SsipY4t/Jcg3+YFUn1IC5yECLCnThZRbG9BhbfQIDXoC\nyOh69kONmdp8XAoRjqzAqaYFuEmf7z9dKmzzK0Rft/5YFcTVItJ4U79vrixZcMgq\nLDHs0mzCIjRk567mRcCaDcSTDLWugebYr7qPOeMZAoGBAK9qMctCpVN98/UmkghX\np0IwVfeY2M2D3kDVRZDM3xlKU4stSivB1OahXLV5Ji0H/1lFOJJPtG7OvbYNVk4/\nQCE+/PQt6lgwX58ToRBqyrCMVUxO8j4czXXITY9KzfogwTlx/b+yad5eg4Zze6AY\nylItymMAciLrONnCC6MiQGVs\n-----END PRIVATE KEY-----\n",
+  "client_email": "bigquery@hdzprevencionfraudes.iam.gserviceaccount.com",
+  "client_id": "113327586005906793959",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/bigquery%40hdzprevencionfraudes.iam.gserviceaccount.com"
+}
