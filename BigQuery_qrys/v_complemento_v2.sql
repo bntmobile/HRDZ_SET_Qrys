@@ -154,13 +154,15 @@ inner join
                   SELECT t1.no_folio_det,t1.no_docto,t2.id_estatus_mov
                             FROM   `mx-herdez-analytics.sethdzqa.TransfPropuestasR3000` t1
                             inner join (select 
-                                        case when grupo_pago =0 then folio_ref else  grupo_pago end as grupo_pago
+                                        case when a.grupo_pago =0 then a.folio_ref else  a.grupo_pago end as grupo_pago
                                         ,id_estatus_mov
-                                        FROM `mx-herdez-analytics.sethdzqa.TransfPagosR3200` 
-                                          --where  id_estatus_mov in ('K','T') 
+                                        FROM `mx-herdez-analytics.sethdzqa.v_zimp_fact_trans` t1
+										left join  `mx-herdez-analytics.sethdzqa.TransfPagosR3200` a on t1.no_doc_sap= a.no_docto
+                                         where  a.id_estatus_mov in ('K','T') 
+                                         -- and a.grupo_pago<>0
                                         group by 
-                                        case when grupo_pago =0 then folio_ref else  grupo_pago end
-                                        ,id_estatus_mov
+                                        case when a.grupo_pago =0 then a.folio_ref else  a.grupo_pago end
+                                        ,a.id_estatus_mov
                                         ) t2 on t1.grupo_pago=t2.grupo_pago
                   group by t1.no_docto,t1.no_folio_det,t2.id_estatus_mov
 
