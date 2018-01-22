@@ -8,7 +8,7 @@ t1.id_tipo_saldo,
 t1.no_linea,
 t1.id_inv_cbolsa,
 t1.no_cuenta,
-'K' id_estatus_mov,
+t2.id_estatus_mov,
 t1.no_cheque,
 t1.id_chequera,
 t1.id_banco,
@@ -150,14 +150,19 @@ t1.comentario2,
 from  `mx-herdez-analytics.sethdzqa.TransfPropuestasR3000` t1
 inner join 
           (
-          SELECT t1.no_folio_det,t1.no_docto,count(t2.grupo_pago) cuenta 
-          FROM   `mx-herdez-analytics.sethdzqa.TransfPropuestasR3000` t1
-          left join (select grupo_pago 
-                      FROM `mx-herdez-analytics.sethdzqa.TransfPagosR3200` 
-                      where  id_estatus_mov in ('K','T') 
-                      AND grupo_pago<>0
-                      group by grupo_pago) t2 on t1.grupo_pago=t2.grupo_pago
-          where 1=1
-          group by t1.no_docto,t1.no_folio_det
+         
+                  SELECT t1.no_folio_det,t1.no_docto,t2.id_estatus_mov
+                            FROM   `mx-herdez-analytics.sethdzqa.TransfPropuestasR3000` t1
+                            inner join (select 
+                                        case when grupo_pago =0 then folio_ref else  grupo_pago end as grupo_pago
+                                        ,id_estatus_mov
+                                        FROM `mx-herdez-analytics.sethdzqa.TransfPagosR3200` 
+                                          --where  id_estatus_mov in ('K','T') 
+                                        group by 
+                                        case when grupo_pago =0 then folio_ref else  grupo_pago end
+                                        ,id_estatus_mov
+                                        ) t2 on t1.grupo_pago=t2.grupo_pago
+                  group by t1.no_docto,t1.no_folio_det,t2.id_estatus_mov
+
           )t2 on t1.no_docto=t2.no_docto and t1.no_folio_det=t2.no_folio_det
-          --where t1.no_docto  in('009645355','009645810')
+where 1=1
