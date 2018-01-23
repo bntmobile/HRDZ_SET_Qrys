@@ -60,7 +60,7 @@ SELECT
   sag.cve_control,
   sag.fecha_propuesta,
    e_prop.KdDiasPlazo,
-   DATE_ADD(EXTRACT( date from sag.fecha_propuesta), interval cast(e_prop.KdDiasPlazo as int64) DAY ) FechaPropuestaMadDiasPlazoProveedor ,
+   DATE_ADD(EXTRACT( date from sag.fecha_propuesta), interval cast(e_prop.KdDiasPlazo as int64) DAY ) FechaPropuestaMasDiasPlazoProveedor ,
   sag.concepto,
    cr_pp.id_rubro as id_rubro_prop,
    cr_pp.desc_rubro as desc_rubro_prop,
@@ -153,11 +153,13 @@ zex.rubro_erp rubro_erp__zexp_fact,
   SUM(COALESCE (zex.imp_pago,0)) AS imp_pago_zexp_fact,
   SUM(COALESCE (zi.importe,0)) AS importe_zimp_fact,
   SUM(COALESCE (pp.importe,0)) AS  importe_propuesta,
-  SUM(COALESCE (pad.importe,0)) AS importe_PagadoDet,
+  CASE WHEN  pp.id_estatus_mov='X' THEN 0  ELSE  SUM(COALESCE (pad.importe,0))   END AS importe_PagadoDet,
   -- SUM(COALESCE (pa.importe,0)) AS  importe_Pagado,
-  SUM(COALESCE (pg.importe,0)) AS importe_Pagado,
-  SUM(COALESCE (zi.importe,0)) -  SUM(COALESCE (pad.importe,0)) Importe_Diferencia_entre_zimp_fact_propuesta,  
-  SUM(COALESCE (pp.importe,0)) -  SUM(COALESCE (pad.importe,0)) Importe_Diferencia_entre_propuesta_pagado,
+  CASE WHEN pp.id_estatus_mov='X' THEN 0  ELSE SUM(COALESCE (pg.importe,0))   END AS importe_Pagado,
+  
+  
+  SUM(COALESCE (zi.importe,0)) -  CASE WHEN  pp.id_estatus_mov='X' THEN 0  ELSE  SUM(COALESCE (pad.importe,0))   END Importe_Diferencia_entre_zimp_fact_propuesta,  
+  SUM(COALESCE (pp.importe,0)) -  CASE WHEN  pp.id_estatus_mov='X' THEN 0  ELSE  SUM(COALESCE (pad.importe,0))   END Importe_Diferencia_entre_propuesta_pagado,
   upper(trim(pg.nom_arch)) as nom_arch,
   pg.id_estatus_arch,
   pg.id_banco_benef,
@@ -242,14 +244,15 @@ left join   `mx-herdez-analytics.sethdzqa.v_cat_empleados_proveedores`  e_pa ON 
 left join   `mx-herdez-analytics.sethdzqa.cat_rubro` cr_pp   on cr_pp.id_rubro  =  pp.id_rubro
 left join   `mx-herdez-analytics.sethdzqa.cat_rubro` cr_pad  on cr_pad.id_rubro =  pad.id_rubro
 left join   `mx-herdez-analytics.sethdzqa.cat_rubro` cr_pa   on cr_pa.id_rubro  =  pg.id_rubro
-left join   `mx-herdez-analytics.sethdzqa.zexp_fact` zex on pp.no_docto=zex.no_doc_sap
+left join   `mx-herdez-analytics.sethdzqa.zexp_fact` zex on pp.no_docto=zex.no_doc_sap and zex.no_folio_set=pp.no_folio_det
 left join   `mx-herdez-analytics.sethdzqa.v_cat_empleados_proveedores`  e_zi ON   CAST(zi.no_benef AS STRING) = CAST(e_zi.equivale_persona AS STRING)
 left join   `mx-herdez-analytics.sethdzqa.cat_forma_pago`     fp_zi  on   fp_zi.id_forma_pago  = zi.forma_pago
 
 WHERE
   1=1
 -- and pp.no_docto in ('009649835','009649836','009649837','009649838','009649839','009649840','009649841','009645355','009645810', '009566822') 
--- and pp.no_docto in ('5647383221') docto se ciuadriplica
+
+
 GROUP BY
    pp.no_docto
 ,  pa.id_banco_benef
