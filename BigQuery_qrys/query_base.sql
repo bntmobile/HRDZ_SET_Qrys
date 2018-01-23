@@ -1,4 +1,3 @@
- --9_52 am
  WITH pg AS (
   SELECT
     a.no_folio_det,
@@ -165,8 +164,10 @@ zex.rubro_erp rubro_erp__zexp_fact,
   pg.id_chequera_benef,
   CASE    
           WHEN pg.grupo_pago= pad.grupo_pago and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch='X' THEN 'CANCELADO'
+          WHEN pg.grupo_pago= pad.grupo_pago and  pg.id_estatus_mov in ('K','T') and pp.id_estatus_mov='X'  THEN 'CANCELADO' 
+          
 		      --WHEN pg.no_folio_det= pad.folio_ref and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch='R' THEN 'RECHAZADO BANCO'
-		      WHEN pg.grupo_pago= pad.grupo_pago and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch in ('T') THEN 'PAGADO' 
+		      WHEN pg.grupo_pago= pad.grupo_pago and  pg.id_estatus_mov in ('K','T') and pp.id_estatus_mov in ('A') and pg.id_estatus_arch in ('T') THEN 'PAGADO' 
 			   WHEN pg.grupo_pago= pad.grupo_pago and  pg.id_estatus_mov in ('K','T') and pg.id_estatus_arch in ('T','R') THEN 'REGENERADO PAGADO' 
                 
           
@@ -209,6 +210,11 @@ as estatus_cambio_persona_proceso
 ,zex.causa_rech as zex_causa_rech
 ,zex.folio_as400
 ,  cast(SUBSTR(cast(SUM(COALESCE (pad.importe,0)) as string),0,1) as int64) as digitoImporte
+, pg.grupo_pago as grupo_pago_pg
+, pad.grupo_pago grupo_pago_pad
+, pg.folio_ref as folio_ref_pg
+, pad.folio_ref as folio_ref_pad
+, pad.no_folio_det as no_folio_det_pad
 FROM        `mx-herdez-analytics.sethdzqa.v_zimp_fact_trans` zi 
 LEFT JOIN   `mx-herdez-analytics.sethdzqa.TransfPropuestasR3000` pp on  zi.no_doc_sap=pp.no_docto 
 LEFT JOIN   (select * from `mx-herdez-analytics.sethdzqa.TransfPagoDetalleR3201` union all select * from `sethdzqa.v_complemento_v2` )   pad ON  pp.no_docto= pad.no_docto
@@ -242,8 +248,8 @@ left join   `mx-herdez-analytics.sethdzqa.cat_forma_pago`     fp_zi  on   fp_zi.
 
 WHERE
   1=1
- and pp.no_docto in ('009649835','009649836','009649837','009649838','009649839','009649840','009649841','009645355','009645810', '009645810','009645355', '009566822') 
-
+-- and pp.no_docto in ('009649835','009649836','009649837','009649838','009649839','009649840','009649841','009645355','009645810', '009566822') 
+and pp.no_docto in ('5647383221')
 GROUP BY
    pp.no_docto
 ,  pa.id_banco_benef
@@ -377,4 +383,6 @@ GROUP BY
 , e_prop.KdDiasPlazo
 , pg.grupo_pago
 , pad.grupo_pago
+, pg.folio_ref
+, pad.no_folio_det
 
