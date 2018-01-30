@@ -7,9 +7,13 @@ select
 , prov.empleado_de_la_empresa as DxTipoProveedor
 , zi.no_benef KnNoClienteBenefZimpFact
 , pp.no_cliente KnNoClientePropuesta
+, provProp.razon_social as DxRazonSocialProp
 --, pa.no_cliente KnNoClientePago
 --, grp_pg.no_cliente KnNoClientePago_grp_pg
 , case when pa.no_cliente  is null then grp_pg.no_cliente else pa.no_cliente  end as KnNoClientePago
+, provPa.razon_social DxRazonSocialPago
+, case when pa.id_rubro  is null then grp_pg.id_rubro else pa.id_rubro  end as KnRubroPago
+, rpa.desc_rubro as DxRubroPago
 , pp.id_forma_pago as  KnFormaPagoPropuesta
 , pp.origen_mov as KxOrigenPropuesta
 , pp.no_folio_det  as KnNoFolioDetPropuesta
@@ -113,14 +117,17 @@ CASE WHEN pa.id_divisa IS NULL THEN grp_pg.id_divisa ELSE pa.id_divisa END as Kx
 FROM        `mx-herdez-analytics.sethdzqa.v_zimp_fact_trans` zi 
 inner JOIN   `mx-herdez-analytics.sethdzqa.TransfPropuestasR3000` pp on  zi.no_doc_sap=pp.no_docto 
 LEFT JOIN   `mx-herdez-analytics.sethdzqa.TransfPagosR3200` pa ON   pa.no_docto= pp.no_docto and pp.no_folio_det=pa.folio_ref  
-LEFT JOIN  (select grupo_pago,no_folio_det,id_estatus_mov , no_cliente,id_divisa,sum(importe)as importe
+LEFT JOIN  (select grupo_pago,no_folio_det,id_estatus_mov , no_cliente,id_divisa,id_rubro,sum(importe)as importe
             from `mx-herdez-analytics.sethdzqa.TransfPagosR3200` 
-            where grupo_pago <>0 group by  grupo_pago,no_folio_det,id_estatus_mov,no_cliente,id_divisa
+            where grupo_pago <>0 group by  grupo_pago,no_folio_det,id_estatus_mov,no_cliente,id_divisa,id_rubro
             ) as grp_pg ON pp.grupo_pago = grp_pg.grupo_pago
 LEFT JOIN `mx-herdez-analytics.sethdzqa.seleccion_automatica_grupo`   sag on sag.cve_control = pp.cve_control
 LEFT JOIN `mx-herdez-analytics.sethdzqa.v_resumen_det_arch_transfer` as dat on dat.no_folio_det = pa.no_folio_det 
 left join (select * from `mx-herdez-analytics.sethdzqa.v_resumen_det_arch_transfer` where grupo_pago<>0) dat2 on dat2.grupo_pago=pp.grupo_pago
 LEFT JOIN `mx-herdez-analytics.sethdzqa.v_cat_empleados_proveedores`  as prov on zi.no_benef = prov.equivale_persona
---where zi.no_doc_sap ---in('5645003204')
+LEFT JOIN `mx-herdez-analytics.sethdzqa.v_cat_empleados_proveedores`  as provPa on  cast(provPa.no_persona as string) = case when pa.no_cliente  is null then grp_pg.no_cliente else pa.no_cliente  end 
+LEFT JOIN  `mx-herdez-analytics.sethdzqa.cat_rubro` rpa on rpa.id_rubro = case when pa.id_rubro  is null then grp_pg.id_rubro else pa.id_rubro  end 
+LEFT JOIN `mx-herdez-analytics.sethdzqa.v_cat_empleados_proveedores`  as provProp on  cast(provProp.no_persona as string) = pp.no_cliente  
+--where zi.no_doc_sap --in('5645003204')
 --in ('009561320','009649835','009649836','009649837','009649838','009649839','009649840','009649841','009645355','009645810', '009566822'
 --,'5646237987', '5646385924')
