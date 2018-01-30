@@ -12,6 +12,8 @@ select
 --, grp_pg.no_cliente KnNoClientePago_grp_pg
 , case when pa.no_cliente  is null then grp_pg.no_cliente else pa.no_cliente  end as KnNoClientePago
 , provPa.razon_social DxRazonSocialPago
+, pp.id_rubro as KnRubroProp
+, rProp.desc_rubro as DxRubroProp
 , case when pa.id_rubro  is null then grp_pg.id_rubro else pa.id_rubro  end as KnRubroPago
 , rpa.desc_rubro as DxRubroPago
 , pp.id_forma_pago as  KnFormaPagoPropuesta
@@ -128,6 +130,7 @@ LEFT JOIN `mx-herdez-analytics.sethdzqa.v_cat_empleados_proveedores`  as prov on
 LEFT JOIN `mx-herdez-analytics.sethdzqa.v_cat_empleados_proveedores`  as provPa on  cast(provPa.no_persona as string) = case when pa.no_cliente  is null then grp_pg.no_cliente else pa.no_cliente  end 
 LEFT JOIN  `mx-herdez-analytics.sethdzqa.cat_rubro` rpa on rpa.id_rubro = case when pa.id_rubro  is null then grp_pg.id_rubro else pa.id_rubro  end 
 LEFT JOIN `mx-herdez-analytics.sethdzqa.v_cat_empleados_proveedores`  as provProp on  cast(provProp.no_persona as string) = pp.no_cliente  
+LEFT JOIN  `mx-herdez-analytics.sethdzqa.cat_rubro` rProp on rProp.id_rubro =  pp.id_rubro  
 --where zi.no_doc_sap --in('5645003204')
 --in ('009561320','009649835','009649836','009649837','009649838','009649839','009649840','009649841','009645355','009645810', '009566822'
 --,'5646237987', '5646385924')
