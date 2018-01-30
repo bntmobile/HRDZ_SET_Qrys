@@ -2,12 +2,14 @@ select
   zi.no_doc_sap  as KxNoDocto
 , zi.forma_pago as KnFormaPagoZimpFact
 , zi.origen as KxOrigenZimpFact
-, zi.no_benef KxNoBenefZimpFact
-
+, prov.no_persona  KnNoClienteZimpFact
+, prov.KdDiasPlazo as KnDiasPazo
+, prov.empleado_de_la_empresa as DxTipoProveedor
+, zi.no_benef KnNoClienteBenefZimpFact
 , pp.no_cliente KnNoClientePropuesta
 --, pa.no_cliente KnNoClientePago
 --, grp_pg.no_cliente KnNoClientePago_grp_pg
-, case when pa.no_cliente  is null then grp_pg.no_cliente else pa.no_cliente  end as KnClientePago
+, case when pa.no_cliente  is null then grp_pg.no_cliente else pa.no_cliente  end as KnNoClientePago
 , pp.id_forma_pago as  KnFormaPagoPropuesta
 , pp.origen_mov as KxOrigenPropuesta
 , pp.no_folio_det  as KnNoFolioDetPropuesta
@@ -110,7 +112,7 @@ LEFT JOIN  (select grupo_pago,no_folio_det,id_estatus_mov , no_cliente,sum(impor
 LEFT JOIN `mx-herdez-analytics.sethdzqa.seleccion_automatica_grupo`   sag on sag.cve_control = pp.cve_control
 LEFT JOIN `mx-herdez-analytics.sethdzqa.v_resumen_det_arch_transfer` as dat on dat.no_folio_det = pa.no_folio_det 
 left join (select * from `mx-herdez-analytics.sethdzqa.v_resumen_det_arch_transfer` where grupo_pago<>0) dat2 on dat2.grupo_pago=pp.grupo_pago
-
+LEFT JOIN `mx-herdez-analytics.sethdzqa.v_cat_empleados_proveedores`  as prov on zi.no_benef = prov.equivale_persona
 --where zi.no_doc_sap ---in('5645003204')
 --in ('009561320','009649835','009649836','009649837','009649838','009649839','009649840','009649841','009645355','009645810', '009566822'
 --,'5646237987', '5646385924')
