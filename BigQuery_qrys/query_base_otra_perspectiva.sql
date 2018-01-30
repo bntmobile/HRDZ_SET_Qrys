@@ -100,7 +100,12 @@ case
       when  dat.id_estatus_arch is null  then dat2.id_estatus_arch
       when  dat2.id_estatus_arch is null then dat.id_estatus_arch
       when  dat2.id_estatus_arch=dat.id_estatus_arch then dat.id_estatus_arch
-end KxEstatusArch
+end KxEstatusArch,
+
+CASE
+     WHEN  cast(prov.no_persona as string) = pp.no_cliente AND pp.no_cliente = case when pa.no_cliente  is null then grp_pg.no_cliente else pa.no_cliente end    THEN 0
+     ELSE 1
+END KbCambioCliente
 
 FROM        `mx-herdez-analytics.sethdzqa.v_zimp_fact_trans` zi 
 inner JOIN   `mx-herdez-analytics.sethdzqa.TransfPropuestasR3000` pp on  zi.no_doc_sap=pp.no_docto 
