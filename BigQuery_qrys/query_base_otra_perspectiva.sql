@@ -47,7 +47,7 @@ select
         when pp.id_estatus_mov<>'X' AND  case when pa.id_estatus_mov is null then   grp_pg.id_estatus_mov else  pa.id_estatus_mov end in ('T','K') 
             AND case when  dat.id_estatus_arch is null  then dat2.id_estatus_arch when  dat2.id_estatus_arch is null then dat.id_estatus_arch when  dat2.id_estatus_arch=dat.id_estatus_arch then dat.id_estatus_arch end  IN ('R','T')
         then 'PAGADO'
-        else 'REVISAR'
+        else 'SIN PAGAR'
         
   end DxEstatus
 , case 
