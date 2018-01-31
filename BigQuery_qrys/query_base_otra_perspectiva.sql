@@ -3,7 +3,7 @@ select
 , zi.forma_pago as KnFormaPagoZimpFact
 , zi.origen as KxOrigenZimpFact
 , prov.no_persona  KnNoClienteZimpFact
-, prov.KdDiasPlazo as KnDiasPazo
+, prov.KdDiasPlazo as KnDiasPlazo
 , prov.empleado_de_la_empresa as DxTipoProveedor
 , zi.no_benef KnNoClienteBenefZimpFact
 , pp.no_cliente KnNoClientePropuesta
