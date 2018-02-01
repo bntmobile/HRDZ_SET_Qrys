@@ -3,7 +3,6 @@ select
 , zi.forma_pago as KnFormaPagoZimpFact
 , zi.origen as KxOrigenZimpFact
 , prov.no_persona  KnNoClienteZimpFact
-, prov.KdDiasPlazo as KnDiasPlazo
 , prov.empleado_de_la_empresa as DxTipoProveedor
 , zi.no_benef KnNoClienteBenefZimpFact
 , pp.no_cliente KnNoClientePropuesta
@@ -67,6 +66,9 @@ select
 , sag.cve_control as KxCveControl
 , zi.fec_valor KdFechaEstimadaPagoZimpFact
 , zi.fec_propuesta as KdFechaPropuestaZimpFact
+, zi.fec_fact as KdFechaFactura
+, prov.KdDiasPlazo as KnDiasPlazo
+, DATE_ADD(EXTRACT (DATE FROM TIMESTAMP(PARSE_DATE('%d/%m/%Y',zi.fec_fact )) ) , interval cast(prov.KdDiasPlazo as int64) DAY) as KdFechaFacMasDiasPlazo
 , sag.fecha_propuesta KdFechaPropuestaSag
 , sag.fecha_pago KdFechaPagoSag
 , sag.usuario_uno KnFirma1
