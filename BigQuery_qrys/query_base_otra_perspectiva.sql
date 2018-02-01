@@ -24,6 +24,7 @@ select
 ,	pp.grupo_pago as KnGrupoPagoPropuesta
 ,	pp.folio_ref as KnFolioRefPropuesta
 , pp.no_factura as KxNoFactura
+, zi.importe as MfImporteZimpFact
 , pp.importe as MfImportePropuesta
 , pp.id_estatus_mov as KxEstatusPropuesta
 --, pa.no_folio_det as no_folio_det_pa,	pa.id_tipo_operacion as id_tipo_operacion_pa
