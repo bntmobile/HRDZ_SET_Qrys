@@ -69,6 +69,11 @@ select
 , zi.fec_fact as KdFechaFactura
 , prov.KdDiasPlazo as KnDiasPlazo
 , DATE_ADD(EXTRACT (DATE FROM TIMESTAMP(PARSE_DATE('%d/%m/%Y',zi.fec_fact )) ) , interval cast(prov.KdDiasPlazo as int64) DAY) as KdFechaFacMasDiasPlazo
+, CASE  	WHEN  sag.fecha_pago is null  THEN 0
+		ELSE DATE_DIFF(extract( date from  sag.fecha_pago) 
+							   ,  DATE_ADD(EXTRACT (DATE FROM TIMESTAMP(PARSE_DATE('%d/%m/%Y',zi.fec_fact )) ) , interval cast(prov.KdDiasPlazo as int64) DAY) -- KdFechaFacMasDiasPlazo
+							   ,  DAY )
+  END AS KnDifFecFactFecPago
 , sag.fecha_propuesta KdFechaPropuestaSag
 , sag.fecha_pago KdFechaPagoSag
 , sag.usuario_uno KnFirma1
@@ -118,7 +123,7 @@ END KbCambioCliente,
 zi.id_divisa KxDivisaZimp,
 pp.id_divisa KxDivisaProp,
 CASE WHEN pa.id_divisa IS NULL THEN grp_pg.id_divisa ELSE pa.id_divisa END as KxDivisaPagado
-
+,datx.nom_arch as KxNomArch
 FROM        `mx-herdez-analytics.sethdzqa.v_zimp_fact_trans` zi 
 inner JOIN   `mx-herdez-analytics.sethdzqa.TransfPropuestasR3000` pp on  zi.no_doc_sap=pp.no_docto 
 LEFT JOIN   `mx-herdez-analytics.sethdzqa.TransfPagosR3200` pa ON   pa.no_docto= pp.no_docto and pp.no_folio_det=pa.folio_ref  
@@ -134,6 +139,45 @@ LEFT JOIN `mx-herdez-analytics.sethdzqa.v_cat_empleados_proveedores`  as provPa 
 LEFT JOIN  `mx-herdez-analytics.sethdzqa.cat_rubro` rpa on rpa.id_rubro = case when pa.id_rubro  is null then grp_pg.id_rubro else pa.id_rubro  end 
 LEFT JOIN `mx-herdez-analytics.sethdzqa.v_cat_empleados_proveedores`  as provProp on  cast(provProp.no_persona as string) = pp.no_cliente  
 LEFT JOIN  `mx-herdez-analytics.sethdzqa.cat_rubro` rProp on rProp.id_rubro =  pp.id_rubro  
+LEFT JOIN `sethdzqa.det_arch_transfer`  datx on datx.no_folio_det = 
+case 
+      when  dat.no_folio_det is null  then dat2.no_folio_det
+      when  dat2.no_folio_det is null then dat.no_folio_det
+      when  dat2.no_folio_det=dat.no_folio_det then dat.no_folio_det
+end
+and datx.id_estatus_arch = 
+case 
+      when  dat.id_estatus_arch is null  then dat2.id_estatus_arch
+      when  dat2.id_estatus_arch is null then dat.id_estatus_arch
+      when  dat2.id_estatus_arch=dat.id_estatus_arch then dat.id_estatus_arch
+end 
+and
+case
+        
+        when      pp.id_estatus_mov='X'   
+             AND  case when pa.id_estatus_mov is null then   grp_pg.id_estatus_mov else  pa.id_estatus_mov end ='X' 
+             AND  case when  dat.id_estatus_arch is null  then dat2.id_estatus_arch 
+                       when  dat2.id_estatus_arch is null then dat.id_estatus_arch 
+                       when  dat2.id_estatus_arch=dat.id_estatus_arch 
+                  then dat.id_estatus_arch END  IN ('R','T')                  
+             THEN 'REVISAR CANCELADO Y PAGADO' 
+        -- SI A NIVEL DE PROPUESTA TIENE ESTATUS X ES CANCELADO
+        when pp.id_estatus_mov='X'  THEN 'CANCELADO'
+        -- SI A NIVEL DE PROPUESTA TIENE X Y ADEMÁS COMO PAGO ACUMAULADO TIENE ESTATUS "X" ES CANCELADO
+        when pp.id_estatus_mov='X'   OR  case when pa.id_estatus_mov is null then   grp_pg.id_estatus_mov else  pa.id_estatus_mov end ='X' then 'CANCELADO'
+        -- TAMBIEN ES CANCELADO AUNQUE EN PROP TENGA ESTATUS DIFERENTE A 'X' Y EN PAGO TENEGA ESTATUS DE T,K Y EN DET_ARCH_TRANSFER TENGA 'X'
+        when pp.id_estatus_mov<>'X' AND  case when pa.id_estatus_mov is null then   grp_pg.id_estatus_mov else  pa.id_estatus_mov end in ('T','K') 
+            AND case when  dat.id_estatus_arch is null  then dat2.id_estatus_arch when  dat2.id_estatus_arch is null then dat.id_estatus_arch when  dat2.id_estatus_arch=dat.id_estatus_arch then dat.id_estatus_arch end  IN ('X')
+        then 'CANCELADO'
+        
+        -- PARA SER PAGADO DEBE LA PROPUESTA TENER ESTATUS DIFERENTE DE "X", ADEMÁS A NIVEL DE PAGO INDIVIDUAL O GRUPASL DEBE TENER ESTATUS T O K 
+        -- Y ADEMÁS EN DET_ARCH_TRANSFER DEBERÁ TENER EL PAGO EL ESTATUS DE 'R' O 'T' 
+        when pp.id_estatus_mov<>'X' AND  case when pa.id_estatus_mov is null then   grp_pg.id_estatus_mov else  pa.id_estatus_mov end in ('T','K') 
+            AND case when  dat.id_estatus_arch is null  then dat2.id_estatus_arch when  dat2.id_estatus_arch is null then dat.id_estatus_arch when  dat2.id_estatus_arch=dat.id_estatus_arch then dat.id_estatus_arch end  IN ('R','T')
+        then 'PAGADO'
+        else 'SIN PAGAR'
+        
+  end ='PAGADO'
 --where zi.no_doc_sap --in('5645003204')
 --in ('009561320','009649835','009649836','009649837','009649838','009649839','009649840','009649841','009645355','009645810', '009566822'
 --,'5646237987', '5646385924')
