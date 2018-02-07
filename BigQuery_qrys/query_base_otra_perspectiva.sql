@@ -144,7 +144,7 @@ LEFT JOIN `mx-herdez-analytics.sethdzqa.v_cat_empleados_proveedores`  as provPa 
 LEFT JOIN  `mx-herdez-analytics.sethdzqa.cat_rubro` rpa on rpa.id_rubro = case when pa.id_rubro  is null then grp_pg.id_rubro else pa.id_rubro  end 
 LEFT JOIN `mx-herdez-analytics.sethdzqa.v_cat_empleados_proveedores`  as provProp on  cast(provProp.no_persona as string) = pp.no_cliente  
 LEFT JOIN  `mx-herdez-analytics.sethdzqa.cat_rubro` rProp on rProp.id_rubro =  pp.id_rubro  
-LEFT JOIN `sethdzqa.det_arch_transfer`  datx on datx.no_folio_det = 
+LEFT JOIN `mx-herdez-analytics.sethdzqa.det_arch_transfer`  datx on datx.no_folio_det = 
 case  when  dat.no_folio_det is null  then dat2.no_folio_det
       when  dat2.no_folio_det is null then dat.no_folio_det
       when  dat2.no_folio_det=dat.no_folio_det then dat.no_folio_det end and datx.id_estatus_arch = 
@@ -173,7 +173,7 @@ and case when      pp.id_estatus_mov='X'
         then 'PAGADO'
         else 'SIN PAGAR'
   end ='PAGADO'
-LEFT JOIN `sethdzqa.zexp_fact` ze on zi.no_doc_sap = ze.no_doc_sap  
+LEFT JOIN `mx-herdez-analytics.sethdzqa.zexp_fact` ze on zi.no_doc_sap = ze.no_doc_sap  
 																		and case 
 																			  when  dat.no_folio_det is null  then dat2.no_folio_det
 																			  when  dat2.no_folio_det is null then dat.no_folio_det
