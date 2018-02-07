@@ -189,7 +189,7 @@ LEFT JOIN `mx-herdez-analytics.sethdzqa.zexp_fact` ze on zi.no_doc_sap = ze.no_d
 																		and ze.no_folio_set not in (5036899) -- se omite éste  porque sino duplica los registros referente al docto 009605673 que  esta en dls y esta doble en sus registros 3000
 Left join(
 			Select no_folio_1, no_folio_2,tipo_concilia, fec_alta, no_empresa,id_banco,id_chequera, fec_exporta
-			from `sethdzqa.cruce_concilia`
+			from `mx-herdez-analytics.sethdzqa.cruce_concilia`
 			group by no_folio_1, no_folio_2,tipo_concilia, fec_alta, no_empresa,id_banco,id_chequera, fec_exporta
 			)  ccon on -- se mete agrupación ya que hay 1 registro duplicado 4811747 
 case 
@@ -197,8 +197,8 @@ case
       when  dat2.no_folio_det is null then dat.no_folio_det
       when  dat2.no_folio_det=dat.no_folio_det then dat.no_folio_det
 end = ccon.no_folio_1
-left join `sethdzqa.concilia_banco` cban on cban.secuencia = ccon.no_folio_2 and ccon.no_empresa=cban.no_empresa
-left join `sethdzqa.movto_banca_e` mbe on mbe.secuencia = cban.secuencia and mbe.no_empresa = cban.no_empresa
+left join `mx-herdez-analytics.sethdzqa.concilia_banco` cban on cban.secuencia = ccon.no_folio_2 and ccon.no_empresa=cban.no_empresa
+left join `mx-herdez-analytics.sethdzqa.movto_banca_e` mbe on mbe.secuencia = cban.secuencia and mbe.no_empresa = cban.no_empresa
 
 
 --where zi.no_doc_sap --in('5645003204')
