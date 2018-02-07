@@ -126,9 +126,8 @@ CASE WHEN pa.id_divisa IS NULL THEN grp_pg.id_divisa ELSE pa.id_divisa END as Kx
 ,datx.nom_arch as KxNomArch
 , ze.fecha_exp as KdFechaExpZexpFact
 , ze.hora_recibo DxHoraReciboZexpFact
-, ze.estatus as DxEstatusZexpFact
+, case  when ze.estatus = 'E' then 'EXPORTADAO' when ze.estatus='I' then 'IMPORTADO' ELSE 'REVISAR ESTATUS' END as DxEstatusZexpFact
 , ze.causa_rech as DxCausaRechZexpFact
-
 
 FROM        `mx-herdez-analytics.sethdzqa.v_zimp_fact_trans` zi 
 inner JOIN   `mx-herdez-analytics.sethdzqa.TransfPropuestasR3000` pp on  zi.no_doc_sap=pp.no_docto 
