@@ -191,7 +191,7 @@ Left join(
 			Select no_folio_1, no_folio_2,tipo_concilia, fec_alta, no_empresa,id_banco,id_chequera, fec_exporta
 			from `sethdzqa.cruce_concilia`
 			group by no_folio_1, no_folio_2,tipo_concilia, fec_alta, no_empresa,id_banco,id_chequera, fec_exporta
-			)  ccon on 
+			)  ccon on -- se mete agrupación ya que hay 1 registro duplicado 4811747 
 case 
       when  dat.no_folio_det is null  then dat2.no_folio_det
       when  dat2.no_folio_det is null then dat.no_folio_det
@@ -200,3 +200,7 @@ end = ccon.no_folio_1
 left join `sethdzqa.concilia_banco` cban on cban.secuencia = ccon.no_folio_2 and ccon.no_empresa=cban.no_empresa
 left join `sethdzqa.movto_banca_e` mbe on mbe.secuencia = cban.secuencia and mbe.no_empresa = cban.no_empresa
 
+
+--where zi.no_doc_sap --in('5645003204')
+--in ('009561320','009649835','009649836','009649837','009649838','009649839','009649840','009649841','009645355','009645810', '009566822'
+--,'5646237987', '5646385924')
