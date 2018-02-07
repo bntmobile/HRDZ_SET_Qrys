@@ -5,6 +5,7 @@ select
 , prov.no_persona  KnNoClienteZimpFact
 , prov.empleado_de_la_empresa as DxTipoProveedor
 , zi.no_benef KnNoClienteBenefZimpFact
+, pp.no_empresa KnNoEmpresa
 , pp.no_cliente KnNoClientePropuesta
 , provProp.razon_social as DxRazonSocialProp
 --, pa.no_cliente KnNoClientePago
@@ -128,7 +129,13 @@ CASE WHEN pa.id_divisa IS NULL THEN grp_pg.id_divisa ELSE pa.id_divisa END as Kx
 , ze.hora_recibo DxHoraReciboZexpFact
 , case  when ze.estatus = 'E' then 'EXPORTADAO' when ze.estatus='I' then 'IMPORTADO' ELSE 'REVISAR ESTATUS' END as DxEstatusZexpFact
 , ze.causa_rech as DxCausaRechZexpFact
-
+, ccon.fec_alta
+, ccon.tipo_concilia as KxTipoConcilia
+, cban.id_estatus_cb as KxEstatusCb
+, cban.importe as MfImporteCb
+, cban.folio_banco as KXFolioBancoCb
+, cban.descripcion DxDescripcionCb
+, mbe.archivo KxArchivoMvtoBanE
 FROM        `mx-herdez-analytics.sethdzqa.v_zimp_fact_trans` zi 
 inner JOIN   `mx-herdez-analytics.sethdzqa.TransfPropuestasR3000` pp on  zi.no_doc_sap=pp.no_docto 
 LEFT JOIN   `mx-herdez-analytics.sethdzqa.TransfPagosR3200` pa ON   pa.no_docto= pp.no_docto and pp.no_folio_det=pa.folio_ref  
@@ -180,6 +187,16 @@ LEFT JOIN `mx-herdez-analytics.sethdzqa.zexp_fact` ze on zi.no_doc_sap = ze.no_d
 																			  when  dat2.no_folio_det=dat.no_folio_det then dat.no_folio_det
 																			end = ze.no_pedido 
 																		and ze.no_folio_set not in (5036899) -- se omite éste  porque sino duplica los registros referente al docto 009605673 que  esta en dls y esta doble en sus registros 3000
---where zi.no_doc_sap --in('5645003204')
---in ('009561320','009649835','009649836','009649837','009649838','009649839','009649840','009649841','009645355','009645810', '009566822'
---,'5646237987', '5646385924')
+Left join(
+			Select no_folio_1, no_folio_2,tipo_concilia, fec_alta, no_empresa,id_banco,id_chequera, fec_exporta
+			from `sethdzqa.cruce_concilia`
+			group by no_folio_1, no_folio_2,tipo_concilia, fec_alta, no_empresa,id_banco,id_chequera, fec_exporta
+			)  ccon on 
+case 
+      when  dat.no_folio_det is null  then dat2.no_folio_det
+      when  dat2.no_folio_det is null then dat.no_folio_det
+      when  dat2.no_folio_det=dat.no_folio_det then dat.no_folio_det
+end = ccon.no_folio_1
+left join `sethdzqa.concilia_banco` cban on cban.secuencia = ccon.no_folio_2 and ccon.no_empresa=cban.no_empresa
+left join `sethdzqa.movto_banca_e` mbe on mbe.secuencia = cban.secuencia and mbe.no_empresa = cban.no_empresa
+
