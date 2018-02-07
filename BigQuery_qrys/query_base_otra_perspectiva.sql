@@ -129,7 +129,7 @@ CASE WHEN pa.id_divisa IS NULL THEN grp_pg.id_divisa ELSE pa.id_divisa END as Kx
 , ze.hora_recibo DxHoraReciboZexpFact
 , case  when ze.estatus = 'E' then 'EXPORTADAO' when ze.estatus='I' then 'IMPORTADO' ELSE 'REVISAR ESTATUS' END as DxEstatusZexpFact
 , ze.causa_rech as DxCausaRechZexpFact
-, ccon.fec_alta
+, ccon.fec_alta as KdFechaAltaCruceConcilia
 , ccon.tipo_concilia as KxTipoConcilia
 , cban.id_estatus_cb as KxEstatusCb
 , cban.importe as MfImporteCb
