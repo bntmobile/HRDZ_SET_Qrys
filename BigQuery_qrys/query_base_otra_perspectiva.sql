@@ -179,7 +179,7 @@ and case when      pp.id_estatus_mov='X'
             AND case when  dat.id_estatus_arch is null  then dat2.id_estatus_arch when  dat2.id_estatus_arch is null then dat.id_estatus_arch when  dat2.id_estatus_arch=dat.id_estatus_arch then dat.id_estatus_arch end  IN ('R','T')
         then 'PAGADO'
         else 'SIN PAGAR'
-  end ='PAGADO'
+  end  in ('PAGADO','REVISAR CANCELADO Y PAGADO')
 LEFT JOIN `mx-herdez-analytics.sethdzqa.zexp_fact` ze on zi.no_doc_sap = ze.no_doc_sap  
 																		and case 
 																			  when  dat.no_folio_det is null  then dat2.no_folio_det
@@ -199,7 +199,6 @@ case
 end = ccon.no_folio_1
 left join `mx-herdez-analytics.sethdzqa.concilia_banco` cban on cban.secuencia = ccon.no_folio_2 and ccon.no_empresa=cban.no_empresa
 left join `mx-herdez-analytics.sethdzqa.movto_banca_e` mbe on mbe.secuencia = cban.secuencia and mbe.no_empresa = cban.no_empresa
-
 
 --where zi.no_doc_sap --in('5645003204')
 --in ('009561320','009649835','009649836','009649837','009649838','009649839','009649840','009649841','009645355','009645810', '009566822'
