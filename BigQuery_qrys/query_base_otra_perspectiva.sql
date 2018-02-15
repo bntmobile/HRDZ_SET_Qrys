@@ -136,6 +136,28 @@ CASE WHEN pa.id_divisa IS NULL THEN grp_pg.id_divisa ELSE pa.id_divisa END as Kx
 , cban.folio_banco as KXFolioBancoCb
 , cban.descripcion DxDescripcionCb
 , mbe.archivo KxArchivoMvtoBanE
+, CASE 
+	WHEN 				UPPER(mbe.archivo) like 'MDBI%'
+					OR UPPER(mbe.archivo) like 'MHBI%'	
+					OR UPPER(mbe.archivo) like 'MOVC%'
+					OR UPPER(mbe.archivo) like 'HHCV%'
+					OR UPPER(mbe.archivo) like 'REPMOVCON%'
+					OR UPPER(mbe.archivo) like '80048635931%'
+					OR UPPER(mbe.archivo) like 'H2H%'
+					
+								THEN 'AUTOMATICO'
+	ELSE 'MANUAL'
+END AS DxEstatusArchivoMvtoBanE,
+CASE 
+	WHEN UPPER(mbe.archivo) like 'MDBI%' THEN 'BANAMEX'
+	WHEN UPPER(mbe.archivo) like 'MHBI%'	THEN 'BANAMEX'
+	WHEN UPPER(mbe.archivo) like 'MOVC%' THEN 'BANCOMER'
+	WHEN UPPER(mbe.archivo) like 'HHCV%' THEN 'BANCOMER'
+	WHEN UPPER(mbe.archivo) like 'REPMOVCON%' THEN 'HSBC'
+	WHEN UPPER(mbe.archivo) like '80048635931%' THEN 'SANTANDER'
+	WHEN UPPER(mbe.archivo) like 'H2H%' THEN 'SCOTIABANK'
+	ELSE 'MANUAL'
+END AS DxArchivoBancoMvtoBnE
 FROM        `mx-herdez-analytics.sethdzqa.v_zimp_fact_trans` zi 
 inner JOIN   `mx-herdez-analytics.sethdzqa.TransfPropuestasR3000` pp on  zi.no_doc_sap=pp.no_docto 
 LEFT JOIN   `mx-herdez-analytics.sethdzqa.TransfPagosR3200` pa ON   pa.no_docto= pp.no_docto and pp.no_folio_det=pa.folio_ref  
